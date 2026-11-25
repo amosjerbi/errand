@@ -2,6 +2,10 @@
 
 A cosy Three.js driving game: pick a vehicle, run errands around a painterly valley, and try not to bounce your cargo out of the bed.
 
+![Start screen with the vehicle picker](screenshots/start-screen.png)
+
+![Golden-hour beach run with a bed full of beach balls](screenshots/beach-evening.png)
+
 ## Play
 
 Open `index.html` in a browser (a recent Chrome, Safari, Firefox or Edge with WebGL2). Three.js, the fonts and the icons load from CDNs, so you need an internet connection.
