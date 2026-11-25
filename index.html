@@ -42,6 +42,11 @@
   #boostRow{display:flex;align-items:center;gap:6px;margin-top:4px;font-size:14px}
   #boostRow .boostIc{font-size:18px;color:#ffb340;filter:drop-shadow(0 1px 2px rgba(0,0,0,.45))}
   #tod i{font-size:16px;vertical-align:-2px;margin-right:2px}
+  #tod,#flock{display:inline-block;vertical-align:middle}
+  #flock{margin-left:14px;white-space:nowrap}
+  #flock svg{width:20px;height:16px;vertical-align:-3px;margin-right:4px;filter:drop-shadow(0 1px 2px rgba(0,0,0,.45))}
+  #flock.full{color:#ffd76a}#flock.pop{animation:flockPop .45s ease-out}
+  @keyframes flockPop{0%{transform:scale(1)}35%{transform:scale(1.35)}100%{transform:scale(1)}}
   #boostBar{display:flex;gap:4px}
   #boostBar .seg{width:38px;height:13px;border:2px solid #fff;border-radius:7px;background:rgba(255,255,255,.18);box-shadow:0 1px 4px rgba(0,0,0,.35);overflow:hidden;transition:opacity .3s}
   #boostBar .seg i{display:block;height:100%;width:0;background:linear-gradient(90deg,#e0482a,#ff9a2a,#ffd54a);transition:width .1s}
@@ -115,7 +120,7 @@
 <div id="grain"></div><div id="vig"></div>
 
 <div id="job" class="hud card"><div class="lbl" id="jobLbl">Errand</div><div class="txt" id="jobTxt">—</div><div class="sub" id="jobSub"></div><div id="items"></div><div class="tally">◎ <span id="coins">0</span> · ✅ <span id="dels">0</span> errands done · ⏱ <span id="timer">0:00</span></div></div>
-<div id="stats" class="hud"><div class="small" id="tod"><i class="ph-fill ph-sun-horizon"></i> 7:25</div></div>
+<div id="stats" class="hud"><div class="small" id="tod"><i class="ph-fill ph-sun-horizon"></i> 7:25</div><div class="small" id="flock" title="Sheep in the truck"><svg viewBox="0 0 20 16" aria-hidden="true"><g fill="currentColor"><circle cx="6" cy="7" r="3.4"/><circle cx="10" cy="5.6" r="3.6"/><circle cx="13.6" cy="7.4" r="3.2"/><circle cx="9.4" cy="9.2" r="3.4"/><rect x="6" y="10" width="1.8" height="5" rx=".9"/><rect x="12" y="10" width="1.8" height="5" rx=".9"/></g><ellipse cx="3.4" cy="6.4" rx="2.6" ry="2.2" fill="#3a302b"/><ellipse cx="2.6" cy="4.3" rx="1.2" ry=".7" fill="#3a302b" transform="rotate(-25 2.6 4.3)"/></svg><span id="flockN">0/3</span></div></div>
 <div id="compass" class="hud"><div id="arrow"><svg id="arrSvg" width="26" height="26" viewBox="0 0 26 26"><path d="M13 2 L22 22 L13 17 L4 22 Z" fill="#e0703f" stroke="#2b2420" stroke-width="2.4" stroke-linejoin="round"/></svg></div><div id="dist">0 m</div></div>
 <div id="speed" class="hud"><span class="n" id="spd">0</span> <span class="u">km/h</span><div id="boostRow"><i class="ph-fill ph-fire boostIc"></i><div id="boostBar"><div class="seg"><i></i></div><div class="seg"><i></i></div><div class="seg"><i></i></div></div></div></div>
 <div id="toast" class="hud card"></div>
@@ -246,7 +251,7 @@ function sampleTod(t){
   ENV.n=k<.5?A.n:Bk.n;
 }
 function skipTime(){const marks=[.1,.5,.69,.97];const nx=marks.find(m=>m>tod+.01);tod=nx===undefined?marks[0]:nx;}
-let lastTodLabel='',todHTML='';
+let lastTodLabel='',todHTML='',lastFlock=-1;
 
 // ---------- road ----------
 const ROAD_N=3200, ROAD_W=3.6;
@@ -1953,6 +1958,8 @@ function frame(){
   { const uw=camera.position.y<LAKE_Y-.05&&Math.hypot(camera.position.x,camera.position.z)<LAKE_R+24;
     if(uw){scene.fog.color.set('#2a7380').lerp(new THREE.Color('#0b2a33'),ENV.night*.8);scene.fog.near=1;scene.fog.far=lerp(42,26,ENV.night);}
     if(uw!==uwOn){uwOn=uw;$('uw').classList.toggle('on',uw);if(uwF)uwF.frequency.setTargetAtTime(uw?520:20000,ac.currentTime,.08);music.volume=uw?Math.min(music.volume,.2):(musicOff?0:MUSIC_VOL);}}
+  if(riders.length!==lastFlock){const el=$('flock');if(lastFlock>=0&&riders.length>lastFlock){el.classList.remove('pop');void el.offsetWidth;el.classList.add('pop');}
+    lastFlock=riders.length;$('flockN').textContent=`${lastFlock}/${SHEEP_MAX}`;el.classList.toggle('full',lastFlock>=SHEEP_MAX);}
   renderer.render(scene,camera);
   requestAnimationFrame(frame);
 }
