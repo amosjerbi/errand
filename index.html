@@ -22,6 +22,19 @@
   .card{background:var(--paper);border:3px solid var(--ink);border-radius:14px;box-shadow:4px 4px 0 rgba(43,36,32,.85);padding:10px 14px}
   #job{top:16px;left:16px;max-width:min(340px,calc(100vw - 32px));opacity:0;transform:translateY(-10px);pointer-events:none;transition:opacity .2s,transform .2s}
   #job.open{opacity:1;transform:none}
+  #job.open{top:50%;left:50%;transform:translate(-50%,-50%);width:min(340px,calc(100vw - 32px));box-sizing:border-box;z-index:9;pointer-events:auto;padding:16px 18px}
+  #job .pauseHead{display:none;font-size:26px;font-weight:700;text-align:center;margin:0 0 10px}
+  #job.open .pauseHead{display:block}
+  #job .pauseBtns{display:none;flex-direction:column;gap:8px;margin-top:14px}
+  #job.open .pauseBtns{display:flex}
+  #job .pauseBtns button{font:inherit;font-weight:700;font-size:16px;min-height:46px;border:3px solid var(--ink);border-radius:12px;box-shadow:0 3px 0 var(--ink);background:#fff;color:var(--ink);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
+  #job .pauseBtns button:active{transform:translateY(2px);box-shadow:0 1px 0 var(--ink)}
+  #job .pauseBtns #resumeBtn{background:var(--accent);color:#fff}
+  #job .pauseBtns #freezeBtn[aria-pressed="true"]{background:var(--teal);color:#fff}
+  #pauseBack{position:fixed;inset:0;z-index:8;background:rgba(30,22,20,.5);opacity:0;pointer-events:none;transition:opacity .2s}
+  #pauseBack.open{opacity:1;pointer-events:auto}
+  #pauseBtn{position:fixed;top:24px;right:62px;z-index:12;background:none;border:0;padding:4px;color:#fff;font-size:30px;line-height:1;cursor:pointer;filter:drop-shadow(0 1px 2px rgba(0,0,0,.55));display:none}
+  #pauseBtn.on{display:block}#pauseBtn:hover{opacity:.8}
   #job .lbl{font-size:12px;letter-spacing:.12em;text-transform:uppercase;opacity:.65;font-weight:600}
   #job .txt{font-size:18px;font-weight:600;line-height:1.25;margin-top:2px}
   #job .sub{font-size:14px;margin-top:4px;opacity:.85}
@@ -131,7 +144,8 @@
 <canvas id="c"></canvas>
 <div id="grain"></div><div id="vig"></div>
 
-<div id="job" class="hud card"><div class="lbl" id="jobLbl">Errand</div><div class="txt" id="jobTxt">—</div><div class="sub" id="jobSub"></div><div id="items"></div><div class="tally">◎ <span id="coins">0</span> · ✅ <span id="dels">0</span> errands done · ⏱ <span id="timer">0:00</span></div></div>
+<div id="pauseBack"></div>
+<div id="job" class="hud card" role="dialog" aria-label="Paused"><div class="pauseHead">Errand Hill</div><div class="lbl" id="jobLbl">Errand</div><div class="txt" id="jobTxt">—</div><div class="sub" id="jobSub"></div><div id="items"></div><div class="tally">◎ <span id="coins">0</span> · ✅ <span id="dels">0</span> errands done · ⏱ <span id="timer">0:00</span></div><div class="pauseBtns"><button id="resumeBtn"><i class="ph-fill ph-play"></i> Resume</button><button id="freezeBtn" aria-pressed="false"><i class="ph-fill ph-clock"></i> <span id="freezeTxt">Freeze time: Off</span></button><button id="skipTodBtn"><i class="ph-fill ph-sun-horizon"></i> Next time of day</button></div></div>
 <div id="stats" class="hud"><div class="small" id="tod"><i class="ph-fill ph-sun-horizon"></i> 7:25</div><div class="small" id="flock" title="Sheep in the truck"><svg viewBox="0 0 20 16" aria-hidden="true"><g fill="currentColor"><circle cx="6" cy="7" r="3.4"/><circle cx="10" cy="5.6" r="3.6"/><circle cx="13.6" cy="7.4" r="3.2"/><circle cx="9.4" cy="9.2" r="3.4"/><rect x="6" y="10" width="1.8" height="5" rx=".9"/><rect x="12" y="10" width="1.8" height="5" rx=".9"/></g><ellipse cx="3.4" cy="6.4" rx="2.6" ry="2.2" fill="#3a302b"/><ellipse cx="2.6" cy="4.3" rx="1.2" ry=".7" fill="#3a302b" transform="rotate(-25 2.6 4.3)"/></svg><span id="flockN">0/3</span></div></div>
 <div id="compass" class="hud"><div id="arrow"><svg id="arrSvg" width="26" height="26" viewBox="0 0 26 26"><path d="M13 2 L22 22 L13 17 L4 22 Z" fill="#e0703f" stroke="#2b2420" stroke-width="2.4" stroke-linejoin="round"/></svg></div><div id="dist">0 m</div></div>
 <div id="speed" class="hud"><span class="n" id="spd">0</span> <span class="u">km/h</span><div id="boostRow"><i class="ph-fill ph-fire boostIc"></i><div id="boostBar"><div class="seg"><i></i></div><div class="seg"><i></i></div><div class="seg"><i></i></div></div></div></div>
@@ -261,6 +275,7 @@ function sampleTod(t){
 }
 function skipTime(){const marks=[.1,.5,.69,.97];const nx=marks.find(m=>m>tod+.01);tod=nx===undefined?marks[0]:nx;}
 let lastTodLabel='',todHTML='',lastFlock=-1;
+let todFrozen=false;try{todFrozen=localStorage.getItem('eh-freeze-time')==='1';}catch(e){}
 
 // ---------- road ----------
 const ROAD_N=3200, ROAD_W=3.6;
@@ -1924,7 +1939,7 @@ const lampsBuilt=new Set();
 function ensureLamps(){if(lampsBuilt.has(V))return;lampsBuilt.add(V);
   for(const[x,y,z] of V.lamps){const l=new THREE.Mesh(lampGeo,lampMat);l.position.set(x,y,z);V.model.add(l);const h=new THREE.Mesh(haloGeo,haloMat);h.position.set(x,y,z+.08);V.model.add(h);}}
 function updateDayCycle(dt){
-  if(running)tod=(tod+dt/DAY_LEN)%1;
+  if(running&&!todFrozen)tod=(tod+dt/DAY_LEN)%1;
   sampleTod(tod);const N=ENV.night;
   const u=window._sky.material.uniforms;u.top.value.copy(ENV.top);u.mid.value.copy(ENV.mid);u.bot.value.copy(ENV.bot);
   scene.fog.color.copy(ENV.fog);scene.fog.near=lerp(110,70,N);scene.fog.far=lerp(620,380,N);
@@ -1944,7 +1959,7 @@ function updateDayCycle(dt){
   headL.intensity=on*90;headL.position.set(car.x+fx*1.9,car.y+1.1,car.z+fz*1.9);headL.target.position.set(car.x+fx*22,car.y-1.5,car.z+fz*22);
   { const hr=(6+tod*24)%24,h=Math.floor(hr),m=Math.floor((hr-h)*60/5)*5;  // 0 = 6:00 am, shown in 5-minute steps
     const ic={Morning:'sun-horizon',Day:'sun',Evening:'sun-horizon',Dusk:'cloud-moon',Night:'moon-stars',Dawn:'sun-horizon'}[ENV.n.split(' ')[1]]||'sun';
-    const txt=`<i class="ph-fill ph-${ic}"></i> ${h}:${m<10?'0':''}${m}`;if(todHTML!==txt){todHTML=txt;$('tod').innerHTML=txt;} }
+    const txt=`<i class="ph-fill ph-${ic}"></i> ${h}:${m<10?'0':''}${m}${todFrozen?' <i class="ph-fill ph-lock-simple" title="Time frozen"></i>':''}`;if(todHTML!==txt){todHTML=txt;$('tod').innerHTML=txt;} }
   if(ENV.n!==lastTodLabel)lastTodLabel=ENV.n;
 }
 
@@ -1952,6 +1967,7 @@ function updateDayCycle(dt){
 const clock=new THREE.Clock();let elapsed=0;
 const camDir=new THREE.Vector3();
 function frame(){
+  if(paused){clock.getDelta();updateDayCycle(0);renderer.render(scene,camera);requestAnimationFrame(frame);return;}
   const dt=Math.min(clock.getDelta(),.05);elapsed+=dt;
   updateCar(dt);
   if(running){playTime+=dt;checkJob(dt);}
@@ -1993,19 +2009,37 @@ for(const id of['job','stats','compass','speed'])$(id).style.display='none';
 $('vPrev').addEventListener('click',()=>selectVehicle(vIndex-1));$('vNext').addEventListener('click',()=>selectVehicle(vIndex+1));
 const setHow=o=>{$('howto').classList.toggle('open',o);$('howBack').classList.toggle('open',o);if(o)$('howClose').focus();};
 $('howOpen').addEventListener('click',()=>setHow(true));$('howClose').addEventListener('click',()=>setHow(false));$('howBack').addEventListener('click',()=>setHow(false));
-addEventListener('keydown',e=>{if(e.key!=='Escape')return;if($('howto').classList.contains('open')){setHow(false);return;}if(running)$('job').classList.toggle('open');});
+// ---------- pause menu ----------
+let paused=false;
+function setPaused(p){
+  if(!running||p===paused)return;paused=p;
+  $('job').classList.toggle('open',p);$('pauseBack').classList.toggle('open',p);
+  for(const k in keys)keys[k]=false;touch.f=0;
+  if(p){if(ac)ac.suspend().catch(()=>{});music.pause();grassSnd.pause();$('resumeBtn').focus();}
+  else{if(ac)ac.resume().catch(()=>{});if(!musicOff)startMusic();clock.getDelta();}
+}
+function syncFreeze(){$('freezeBtn').setAttribute('aria-pressed',todFrozen);$('freezeTxt').textContent='Freeze time: '+(todFrozen?'On':'Off');todHTML='';}
+syncFreeze();
+$('freezeBtn').addEventListener('click',()=>{todFrozen=!todFrozen;try{localStorage.setItem('eh-freeze-time',todFrozen?'1':'0');}catch(e){}syncFreeze();});
+$('skipTodBtn').addEventListener('click',()=>{skipTime();todHTML='';});
+$('resumeBtn').addEventListener('click',()=>setPaused(false));
+$('pauseBack').addEventListener('click',()=>setPaused(false));
+$('pauseBtn').addEventListener('click',()=>setPaused(!paused));
+addEventListener('visibilitychange',()=>{if(document.hidden)setPaused(true);});
+addEventListener('keydown',e=>{if(e.key!=='Escape')return;if($('howto').classList.contains('open')){setHow(false);return;}setPaused(!paused);});
 selectVehicle(vIndex);
 $('go').addEventListener('click',()=>{
   const st=$('start');st.style.transition='opacity .5s';st.style.opacity=0;st.style.pointerEvents='none';setTimeout(()=>st.style.display='none',520);
   for(const id of['job','stats','compass','speed']){const el=$(id);el.style.display='';el.style.opacity=0;el.style.transition='opacity .6s';setTimeout(()=>{el.style.opacity='';setTimeout(()=>el.style.transition='',700);},900);}
   introT=0;camInit=false;
-  $('musicBtn').classList.remove('intro');running=true;initAudio();startMusic();newJob();setTimeout(()=>toast(`${V.name} is ready!`,'Follow the arrow to your first pickup',2.6),1200);
+  $('musicBtn').classList.remove('intro');$('pauseBtn').classList.add('on');running=true;initAudio();startMusic();newJob();setTimeout(()=>toast(`${V.name} is ready!`,'Follow the arrow to your first pickup',2.6),1200);
 });
 addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);});
 window.__game={car,fish:()=>fish.length,lakeY:LAKE_Y,baa:(...a)=>baa(...a),lh:()=>({...LH}),steeps:()=>steeps.map(r=>({tower:!!r.tower,x:r.x,z:r.z,tx:r.tx,tz:r.tz,H:r.H,ax:r.x-r.tx*30,az:r.z-r.tz*30})),bridge:()=>({...BR}),boostNow:()=>[boost,boostMax()],sheep,riders:()=>riders.length,music:()=>({grass:[grassSnd.paused,+grassSnd.volume.toFixed(2),+grassSnd.playbackRate.toFixed(2)],paused:music.paused,t:music.currentTime,vol:music.volume,err:music.error&&music.error.code,eng:engBus&&engBus.gain.value}),setTod:v=>{tod=v;},tod:()=>tod,newJob,job:()=>job,beach:()=>({a:BEACH_ANG,r:LAKE_R}),trk:()=>trkN,selectVehicle,V:()=>V,start:()=>$("go").click(),keys,loadTest:(n)=>{job={from:0,to:3,cargo:CARGO[n],phase:"deliver",t:0};loadCargo(CARGO[n]);refreshJob();},loose:()=>loose.filter(i=>!i.lost).length,locs,oranges,coins:()=>coins,boost:(v)=>{if(v!==undefined)boost=v;return boost;},dels:(v)=>{if(v!==undefined)dels=v;return dels;},ramps,tp:(x,z,h)=>{car.x=x;car.z=z;car.h=h;car.y=heightAt(x,z);car.lastG=car.y;car.vx=car.vz=car.vy=0;},obsNear:(x,z)=>{const r=[];for(const a of obsGrid.values())for(const o of a)if(o.tree&&o.tree.inst>=0&&Math.hypot(o.x-x,o.z-z)<60)r.push(o);return r;}};
 frame();
 </script>
 <div id="uw"></div>
+<button id="pauseBtn" aria-label="Pause" title="Pause (Esc)"><i class="ph-fill ph-pause"></i></button>
 <button id="musicBtn" class="intro" aria-label="Music on/off" title="Music on/off"><i class="ph-fill ph-speaker-high"></i></button>
 </body>
 </html>
