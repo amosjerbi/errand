@@ -104,6 +104,18 @@
   @media (max-height:700px){#start{--ctaB:24px}#vBlurb{display:none}#start .brand{top:12px}}
   #touch{position:fixed;inset:auto 0 0 0;height:160px;z-index:6;display:none;pointer-events:none}
   #touch .b{position:absolute;bottom:22px;width:76px;height:76px;border-radius:50%;background:rgba(246,236,217,.75);border:3px solid var(--ink);display:grid;place-items:center;font-size:28px;font-weight:700;pointer-events:auto;touch-action:none}
+  #touch{opacity:0;transition:opacity .3s}#touch.on{opacity:1}#touch:not(.on) .b{pointer-events:none}
+  #tF{right:max(22px,env(safe-area-inset-right));bottom:calc(26px + env(safe-area-inset-bottom));width:92px;height:92px;overflow:hidden;background:rgba(43,36,32,.45);border-color:#fff;color:#fff;box-shadow:0 3px 10px rgba(0,0,0,.35);grid-template-rows:1fr auto;align-content:center;gap:0;-webkit-tap-highlight-color:transparent;transition:transform .08s,box-shadow .2s,opacity .2s}
+  #tF .fill{position:absolute;left:0;right:0;bottom:0;height:0;background:linear-gradient(0deg,#e0482a,#ff9a2a 70%,#ffd54a);transition:height .1s}
+  #tF i{position:relative;font-size:38px;line-height:1;text-shadow:0 2px 3px rgba(0,0,0,.4)}
+  #tF small{position:relative;font-size:12px;font-weight:700;letter-spacing:.08em;text-shadow:0 1px 2px rgba(0,0,0,.5)}
+  #tF.empty{opacity:.55}
+  #tF.ready{box-shadow:0 0 14px #ff9a2a,0 3px 10px rgba(0,0,0,.35)}
+  #tF.down{transform:scale(.92)}
+  #tF.boosting{box-shadow:0 0 22px #ffb03a,0 0 6px #fff}
+  #stick{position:fixed;z-index:6;width:116px;height:116px;margin:-58px 0 0 -58px;border-radius:50%;background:rgba(43,36,32,.28);border:3px solid var(--paper);box-sizing:border-box;pointer-events:none}
+  #stick.hidden{display:none}
+  #stickThumb{position:absolute;left:31px;top:31px;width:48px;height:48px;border-radius:50%;background:var(--paper);border:3px solid var(--ink);box-sizing:border-box}
   @media (max-width:640px){
     #start .who{column-gap:14px}#start .who #vStats{padding-left:14px}.stat{font-size:13px;gap:8px;white-space:nowrap}.stat i{width:11px;height:9px}.stat b{gap:2px}#vTag{font-size:11px;letter-spacing:.08em;white-space:nowrap}#vName{font-size:36px!important}
     #job .txt{font-size:15px}
@@ -126,12 +138,9 @@
 <div id="toast" class="hud card"></div>
 
 <div id="touch">
-  <div class="b" id="tL" style="left:18px">◀</div>
-  <div class="b" id="tR" style="left:108px">▶</div>
-  <div class="b" id="tB" style="right:108px">■</div>
-  <div class="b" id="tF" style="right:198px;bottom:60px">🔥</div>
-  <div class="b" id="tG" style="right:18px">▲</div>
+  <div class="b" id="tF" aria-label="Boost"><span class="fill"></span><i class="ph-fill ph-fire"></i><small>BOOST</small></div>
 </div>
+<div id="stick" class="hidden" aria-hidden="true"><b id="stickThumb"></b></div>
 
 <div id="start">
   <header class="brand"><h1>Errand Hill</h1></header>
@@ -1591,10 +1600,16 @@ addEventListener('keydown',e=>{const k=e.key.toLowerCase();keys[k]=true;
   if(k==='m'){muted=!muted;if(master)master.gain.value=muted?0:1;music.muted=muted;grassSnd.muted=muted;}
 });
 addEventListener('keyup',e=>{keys[e.key.toLowerCase()]=false;});
-const touch={l:0,r:0,g:0,b:0,f:0};
-if('ontouchstart' in window||navigator.maxTouchPoints>0){document.getElementById('touch').style.display='block';
-  for(const[id,k]of[['tL','l'],['tR','r'],['tG','g'],['tB','b'],['tF','f']]){const el=document.getElementById(id);
-    el.addEventListener('pointerdown',e=>{touch[k]=1;e.preventDefault();});for(const ev of['pointerup','pointercancel','pointerleave'])el.addEventListener(ev,()=>touch[k]=0);}}
+const touch={f:0};
+// Floating joystick (ported from Wrap N' Roll): touch anywhere on the canvas while driving and drag.
+// Left/right steers, up is gas, down brakes / reverses.
+const STICK_RANGE=58,stick={id:null,x:0,y:0,ox:0,oy:0};
+const isTouch='ontouchstart' in window||navigator.maxTouchPoints>0;
+if(isTouch){document.getElementById('touch').style.display='block';
+  const el=document.getElementById('tF');
+  el.addEventListener('pointerdown',e=>{touch.f=1;el.classList.add('down');e.preventDefault();});
+  for(const ev of['pointerup','pointercancel','pointerleave'])el.addEventListener(ev,()=>{touch.f=0;el.classList.remove('down');});
+  el.addEventListener('contextmenu',e=>e.preventDefault());}
 
 let running=false,camMode=0,coins=0,dels=0,playTime=0,boost=0,boostHinted=false;
 let bigTank=false;const boostMax=()=>(dels>0||bigTank)?3:1;const segEls=[...document.querySelectorAll('#boostBar .seg')];
@@ -1739,9 +1754,10 @@ function thud(v){if(!ac)return;const t=ac.currentTime,o=ac.createOscillator(),g=
 // ---------- physics ----------
 const fwdPt=new THREE.Vector3();
 function updateCar(dt){
-  const up=keys['w']||keys['arrowup']||touch.g, down=keys['s']||keys['arrowdown']||touch.b;
-  const left=keys['a']||keys['arrowleft']||touch.l, right=keys['d']||keys['arrowright']||touch.r, hb=keys[' '];
-  const steerIn=(left?1:0)-(right?1:0);
+  const up=keys['w']||keys['arrowup']||stick.y>.3, down=keys['s']||keys['arrowdown']||stick.y<-.3;
+  const left=keys['a']||keys['arrowleft'], right=keys['d']||keys['arrowright'], hb=keys[' '];
+  const sx=Math.abs(stick.x)<.15?0:(stick.x-Math.sign(stick.x)*.15)/.85;   // small dead zone, analog past it
+  const steerIn=clamp((left?1:0)-(right?1:0)-sx,-1,1);
   car.steer+=(steerIn-car.steer)*Math.min(1,dt*(steerIn?5:8));
   let fx=Math.sin(car.h),fz=Math.cos(car.h);
   let fwd=car.vx*fx+car.vz*fz,latx=car.vx-fx*fwd,latz=car.vz-fz*fwd;
@@ -1847,6 +1863,15 @@ let shake=0;const camPos=new THREE.Vector3(),camLook=new THREE.Vector3();let cam
 // drag to spin the vehicle on the start screen
 const introDrag={on:false,yaw:0,pitch:0,vy:0,lx:0,ly:0,lt:0};
 renderer.domElement.style.touchAction='none';
+{ const cv=renderer.domElement,stEl=document.getElementById('stick'),thumb=document.getElementById('stickThumb');
+  cv.addEventListener('pointerdown',e=>{if(!running||stick.id!==null||(e.pointerType==='mouse'&&!isTouch))return;
+    stick.id=e.pointerId;stick.ox=e.clientX;stick.oy=e.clientY;stick.x=stick.y=0;cv.setPointerCapture(e.pointerId);
+    stEl.style.left=e.clientX+'px';stEl.style.top=e.clientY+'px';thumb.style.transform='';stEl.classList.remove('hidden');});
+  cv.addEventListener('pointermove',e=>{if(e.pointerId!==stick.id)return;
+    const dx=e.clientX-stick.ox,dy=e.clientY-stick.oy,len=Math.hypot(dx,dy),k=len>STICK_RANGE?STICK_RANGE/len:1;
+    stick.x=dx*k/STICK_RANGE;stick.y=-dy*k/STICK_RANGE;thumb.style.transform=`translate(${dx*k}px,${dy*k}px)`;});
+  const endStick=e=>{if(e.pointerId!==stick.id)return;stick.id=null;stick.x=stick.y=0;stEl.classList.add('hidden');};
+  cv.addEventListener('pointerup',endStick);cv.addEventListener('pointercancel',endStick); }
 renderer.domElement.addEventListener('pointerdown',e=>{if(running)return;introDrag.on=true;introDrag.lx=e.clientX;introDrag.ly=e.clientY;introDrag.lt=performance.now();introDrag.vy=0;renderer.domElement.setPointerCapture(e.pointerId);renderer.domElement.style.cursor='grabbing';});
 renderer.domElement.addEventListener('pointermove',e=>{if(running){renderer.domElement.style.cursor='';return;}
   if(!introDrag.on){renderer.domElement.style.cursor='grab';return;}
@@ -1950,6 +1975,7 @@ function frame(){
   // HUD
   if(running){
     const sp=Math.hypot(car.vx,car.vz);$('spd').textContent=Math.round(sp*3.6);const bm=boostMax();segEls.forEach((el,k)=>{const f=clamp(boost-k,0,1);el.firstChild.style.width=(f*100)+'%';el.classList.toggle('locked',k>=bm);el.classList.toggle('full',f>=1);});$('speed').classList.toggle('boosting',!!car.boosting);
+    if(isTouch){const tf=$('tF');$('touch').classList.toggle('on',running);tf.firstChild.style.height=clamp(boost/bm,0,1)*100+'%';tf.classList.toggle('empty',boost<=.005);tf.classList.toggle('ready',boost>=1&&!car.boosting);tf.classList.toggle('boosting',!!car.boosting);}
     const m=Math.floor(playTime/60),s=Math.floor(playTime%60);$('timer').textContent=`${m}:${s<10?'0':''}${s}`;
     if(job){const L=locs[job.phase==='pickup'?job.from:job.to];camera.getWorldDirection(camDir);const cy=Math.atan2(camDir.x,camDir.z),ty=Math.atan2(L.x-car.x,L.z-car.z);
       $('arrSvg').style.transform=`rotate(${-(ty-cy)*180/Math.PI}deg)`;$('dist').textContent=Math.round(Math.hypot(L.x-car.x,L.z-car.z))+' m';$('compass').style.opacity=1;}else $('compass').style.opacity=.3;
