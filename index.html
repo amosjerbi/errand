@@ -140,6 +140,16 @@
   .howto .h{font-size:20px;display:block;margin-bottom:2px}.howto p{margin:6px 0}
   .howto .close{position:absolute;right:8px;top:4px;width:34px;height:34px;background:none;border:0;font-size:28px;line-height:1;cursor:pointer;color:var(--ink)}
   @media (max-width:600px){#start .brand{top:max(96px,14vh)}#start h1{font-size:17vw;text-shadow:4px 4px 0 var(--ink)}}
+  #levels{position:absolute;left:50%;bottom:calc(var(--ctaB) + 66px);transform:translateX(-50%);display:flex;gap:4px;padding:4px;background:rgba(43,36,32,.55);border-radius:999px;pointer-events:auto;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+  #levels button{font:inherit;font-weight:600;font-size:15px;border:0;border-radius:999px;padding:7px 16px;background:transparent;color:var(--paper);cursor:pointer;white-space:nowrap}
+  #levels button.on{background:var(--paper);color:var(--ink)}
+  #levels button.locked{opacity:.75;cursor:not-allowed}
+  #levels button small{font-size:12px;opacity:.8;margin-left:2px}
+  #levels button.shake{animation:lvShake .4s}
+  @keyframes lvShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+  #start .who{bottom:calc(var(--ctaB) + 122px)}
+  #lvBanner{position:fixed;left:50%;top:16%;transform:translateX(-50%);z-index:30;pointer-events:none;text-align:center;color:#fff;text-shadow:0 3px 0 #2b2420,0 0 18px rgba(0,0,0,.4);transition:opacity .4s;opacity:0}
+  #lvBanner b{display:block;font-size:40px}#lvBanner span{font-size:18px}
   @media (max-height:700px){#start{--ctaB:24px}#vBlurb{display:none}#start .brand{top:12px}}
   #touch{position:fixed;inset:auto 0 0 0;height:160px;z-index:6;display:none;pointer-events:none}
   #touch .b{position:absolute;bottom:22px;width:76px;height:76px;border-radius:50%;background:rgba(246,236,217,.75);border:3px solid var(--ink);display:grid;place-items:center;font-size:28px;font-weight:700;pointer-events:auto;touch-action:none}
@@ -171,7 +181,8 @@
 <div id="grain"></div><div id="vig"></div>
 
 <div id="pauseBack"></div>
-<div id="job" class="hud card" role="dialog" aria-label="Paused"><div class="pauseHead">Sunfield</div><div class="lbl" id="jobLbl">Errand</div><div class="txt" id="jobTxt">—</div><div class="sub" id="jobSub"></div><div id="items"></div><div class="tally">◎ <span id="coins">0</span> · ✅ <span id="dels">0</span> errands done · ⏱ <span id="timer">0:00</span></div><div class="tankUp"><div class="row"><span><i class="ph-fill ph-fire"></i> Boost tank upgrade</span><b id="tankCount">3 tanks</b></div><div class="tankBar" id="tankBar"><i></i><i></i><i></i></div><small id="tankTxt">Complete 3 errands = +1 boost tank</small></div><div class="pauseBtns"><button id="resumeBtn"><i class="ph-fill ph-play"></i> Resume</button><button id="freezeBtn" aria-pressed="false"><i class="ph-fill ph-clock"></i> <span id="freezeTxt">Freeze time: Off</span></button><button id="skipTodBtn"><i class="ph-fill ph-sun-horizon"></i> Next time of day</button></div></div>
+<div id="job" class="hud card" role="dialog" aria-label="Paused"><div class="pauseHead">Sunfield</div><div class="lbl" id="jobLbl">Errand</div><div class="txt" id="jobTxt">—</div><div class="sub" id="jobSub"></div><div id="items"></div><div class="tally">◎ <span id="coins">0</span> · ✅ <span id="dels">0</span> errands done · ⏱ <span id="timer">0:00</span></div><div class="tankUp"><div class="row"><span><i class="ph-fill ph-fire"></i> Boost tank upgrade</span><b id="tankCount">3 tanks</b></div><div class="tankBar" id="tankBar"><i></i><i></i><i></i></div><small id="tankTxt">Complete 3 errands = +1 boost tank</small></div><div class="pauseBtns"><button id="resumeBtn"><i class="ph-fill ph-play"></i> Resume</button><button id="freezeBtn" aria-pressed="false"><i class="ph-fill ph-clock"></i> <span id="freezeTxt">Freeze time: Off</span></button><button id="skipTodBtn"><i class="ph-fill ph-sun-horizon"></i> Next time of day</button><button id="lvBtn" style="display:none"></button></div></div>
+<div id="lvBanner"></div>
 <div id="stats" class="hud"><div class="small" id="tod"><i class="ph-fill ph-sun-horizon"></i> 7:25</div><div class="small" id="flock" title="Sheep in the truck"><svg viewBox="0 0 20 16" aria-hidden="true"><g fill="currentColor"><circle cx="6" cy="7" r="3.4"/><circle cx="10" cy="5.6" r="3.6"/><circle cx="13.6" cy="7.4" r="3.2"/><circle cx="9.4" cy="9.2" r="3.4"/><rect x="6" y="10" width="1.8" height="5" rx=".9"/><rect x="12" y="10" width="1.8" height="5" rx=".9"/></g><ellipse cx="3.4" cy="6.4" rx="2.6" ry="2.2" fill="#3a302b"/><ellipse cx="2.6" cy="4.3" rx="1.2" ry=".7" fill="#3a302b" transform="rotate(-25 2.6 4.3)"/></svg><span id="flockN">0/3</span></div></div>
 <div id="compass" class="hud"><div id="arrow"><svg id="arrSvg" width="26" height="26" viewBox="0 0 26 26"><path d="M13 2 L22 22 L13 17 L4 22 Z" fill="#e0703f" stroke="#2b2420" stroke-width="2.4" stroke-linejoin="round"/></svg></div><div id="dist">0 m</div></div>
 <div id="speed" class="hud"><span class="n" id="spd">0</span> <span class="u">km/h</span><div id="boostRow"><i class="ph-fill ph-fire boostIc"></i><div id="boostBar"><div class="seg"><i></i></div><div class="seg"><i></i></div><div class="seg"><i></i></div></div></div></div>
@@ -212,6 +223,7 @@
       </ul>
     </div>
   </aside>
+  <div id="levels" role="radiogroup" aria-label="Level"><button data-lv="1" role="radio">🌾 Valley</button><button data-lv="2" role="radio">🏘️ Town</button></div>
   <div class="actions">
     <button id="go">Start the engine</button>
   </div>
@@ -1873,7 +1885,7 @@ function resetToBeach(){
 const keys={};
 addEventListener('keydown',e=>{const k=e.key.toLowerCase();keys[k]=true;
   if(['arrowup','arrowdown','arrowleft','arrowright',' ','shift'].includes(k))e.preventDefault();
-  if(!running){if($('howto').classList.contains('open'))return;if(k==='arrowleft'||k==='a')selectVehicle(vIndex-1);else if(k==='arrowright'||k==='d')selectVehicle(vIndex+1);else if(k==='enter')$('go').click();return;}
+  if(!running){if($('howto').classList.contains('open'))return;if(k==='arrowleft'||k==='a')selectVehicle(vIndex-1);else if(k==='arrowright'||k==='d')selectVehicle(vIndex+1);else if(k==='enter')$('go').click();else if(k==='arrowup'||k==='arrowdown'||k==='w'||k==='s')pickLevel(lvSel===1?2:1);return;}
   if(k==='c')camMode=(camMode+1)%3;
   if(k==='t'&&running)skipTime();
   if(k==='r')resetToRoad();
@@ -1924,6 +1936,7 @@ function pollPad(){
       const x=dpx||(Math.abs(ax)>.6?Math.sign(ax):0),t=performance.now();
       if(x&&(pad.lastX!==x||t>pad.rep)){selectVehicle(vIndex+x);pad.rep=t+(pad.lastX===x?220:420);}
       pad.lastX=x;
+      if(hit(12)||hit(13))pickLevel(lvSel===1?2:1);   // D-pad up/down: switch level
       if(hit(0)||hit(9))$('go').click();
       if(hit(3))setHow(true);
     }
@@ -2024,7 +2037,7 @@ function checkJob(dt){
       const par=Math.hypot(locs[job.to].x-locs[job.from].x,locs[job.to].z-locs[job.from].z)*1.4/13+20;
       const time=Math.max(0,1-Math.max(0,job.t-par)/par);
       const pay=Math.round(job.cargo.value*frac+40*time*frac);
-      const capBefore=boostMax();coins+=pay;dels++;
+      const capBefore=boostMax();coins+=pay;dels++;lvErrandDone();
       if(dels%ERRANDS_PER_TANK===0&&boostMax()>capBefore){syncSegs();boost=Math.min(boostMax(),boost+1);setTimeout(()=>{popTanks();bunkerSnd('mega');},600);}   // every 3 errands: one more tank
       boost=Math.min(boostMax(),boost+1);$('coins').textContent=coins;$('dels').textContent=dels;
       if(dels===1)setTimeout(()=>{toast('🔥 Boost tank upgraded!','It now holds 3 segments. Each errand fills one, and oranges top it up.',3.2);const bb=$('boostBar');bb.classList.add('unlocked');setTimeout(()=>bb.classList.remove('unlocked'),1600);},2700);
@@ -2398,6 +2411,7 @@ addEventListener('visibilitychange',()=>{if(document.hidden)setPaused(true);});
 addEventListener('keydown',e=>{if(e.key!=='Escape')return;if($('howto').classList.contains('open')){setHow(false);return;}setPaused(!paused);});
 selectVehicle(vIndex);
 $('go').addEventListener('click',()=>{
+  if(lvSel!==LEVEL){location.href=LEVEL_URL[lvSel];return;}   // switching level
   const st=$('start');st.style.transition='opacity .5s';st.style.opacity=0;st.style.pointerEvents='none';setTimeout(()=>st.style.display='none',520);
   for(const id of['job','stats','compass','speed']){const el=$(id);el.style.display='';el.style.opacity=0;el.style.transition='opacity .6s';setTimeout(()=>{el.style.opacity='';setTimeout(()=>el.style.transition='',700);},900);}
   introT=0;camInit=false;
@@ -2405,6 +2419,25 @@ $('go').addEventListener('click',()=>{
 });
 addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);});
 window.__game={bk:()=>BK,mega:()=>megaTank,bunkerLocal,bunkerWorld,car,fish:()=>fish.length,lakeY:LAKE_Y,baa:(...a)=>baa(...a),lh:()=>({...LH}),steeps:()=>steeps.map(r=>({tower:!!r.tower,x:r.x,z:r.z,tx:r.tx,tz:r.tz,H:r.H,ax:r.x-r.tx*30,az:r.z-r.tz*30})),bridge:()=>({...BR}),boostNow:()=>[boost,boostMax()],sheep,riders:()=>riders.length,music:()=>({grass:[grassSnd.paused,+grassSnd.volume.toFixed(2),+grassSnd.playbackRate.toFixed(2)],paused:music.paused,t:music.currentTime,vol:music.volume,err:music.error&&music.error.code,eng:engBus&&engBus.gain.value}),setTod:v=>{tod=v;},tod:()=>tod,newJob,job:()=>job,beach:()=>({a:BEACH_ANG,r:LAKE_R}),trk:()=>trkN,selectVehicle,V:()=>V,start:()=>$("go").click(),keys,loadTest:(n)=>{job={from:0,to:3,cargo:CARGO[n],phase:"deliver",t:0};loadCargo(CARGO[n]);refreshJob();},loose:()=>loose.filter(i=>!i.lost).length,locs,oranges,coins:()=>coins,boost:(v)=>{if(v!==undefined)boost=v;return boost;},dels:(v)=>{if(v!==undefined)dels=v;return dels;},ramps,tp:(x,z,h)=>{car.x=x;car.z=z;car.h=h;car.y=heightAt(x,z);car.lastG=car.y;car.vx=car.vz=car.vy=0;},obsNear:(x,z)=>{const r=[];for(const a of obsGrid.values())for(const o of a)if(o.tree&&o.tree.inst>=0&&Math.hypot(o.x-x,o.z-z)<60)r.push(o);return r;}};
+// ---------- levels: the Town (level 2) opens once you've finished 5 errands in the valley ----------
+const LEVEL=1,TOWN_NEED=5,LEVEL_URL={1:'index.html',2:'level-02.html'};
+const lvDone=()=>{let n=0;try{n=+localStorage.getItem('sunfield-valley-errands')||0;}catch(e){}return n;};
+const townOpen=()=>LEVEL===2||lvDone()>=TOWN_NEED;
+let lvSel=LEVEL;
+function syncLevels(){const b2=document.querySelector('#levels [data-lv="2"]'),open=townOpen();
+  b2.classList.toggle('locked',!open);b2.innerHTML=open?'🏘️ Town':`🔒 Town <small>${Math.min(lvDone(),TOWN_NEED)}/${TOWN_NEED}</small>`;
+  b2.title=open?'':`Finish ${TOWN_NEED} errands in the valley to open the Town`;
+  for(const b of document.querySelectorAll('#levels button')){b.classList.toggle('on',+b.dataset.lv===lvSel);b.setAttribute('aria-checked',+b.dataset.lv===lvSel);}
+  $('go').textContent=lvSel===LEVEL?'Start the engine':lvSel===2?'Drive to the Town':'Drive to the Valley';
+  const other=LEVEL===1?2:1,pb=$('lvBtn');pb.style.display=townOpen()?'':'none';pb.innerHTML=other===2?'<i class="ph-fill ph-buildings"></i> Go to the Town':'<i class="ph-fill ph-tree"></i> Back to the Valley';}
+function pickLevel(lv){if(lv===2&&!townOpen()){const b=document.querySelector('#levels [data-lv="2"]');b.classList.remove('shake');void b.offsetWidth;b.classList.add('shake');return;}lvSel=lv;syncLevels();}
+document.querySelectorAll('#levels button').forEach(b=>b.addEventListener('click',()=>pickLevel(+b.dataset.lv)));
+$('lvBtn').addEventListener('click',()=>{location.href=LEVEL_URL[LEVEL===1?2:1];});
+function lvErrandDone(){if(LEVEL!==1)return;const n=lvDone()+1;try{localStorage.setItem('sunfield-valley-errands',n);}catch(e){}
+  if(n===TOWN_NEED)setTimeout(()=>{const d=$('lvBanner');d.innerHTML='<b>🏘️ The Town is open!</b><span>Head there from the start screen, or Pause → Go to the Town</span>';d.style.opacity=1;setTimeout(()=>d.style.opacity=0,4500);},2800);
+  syncLevels();}
+syncLevels();
+
 frame();
 </script>
 <div id="uw"></div>
