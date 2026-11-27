@@ -2283,7 +2283,8 @@ function updateCamera(dt,t){
   if(!running){if(!introDrag.on){introDrag.yaw+=introDrag.vy*dt;introDrag.vy*=Math.exp(-dt*4);}const P=innerWidth<innerHeight,a=car.h+Math.PI-INTRO.yaw+introDrag.yaw,r=P?INTRO.rP:INTRO.r,ch=INTRO.h+introDrag.pitch;camera.position.set(car.x+Math.sin(a)*r,car.y+ch,car.z+Math.cos(a)*r);introLook.set(car.x,car.y+(P?INTRO.lookP:INTRO.look),car.z);camera.lookAt(introLook);camera.fov=55;camera.updateProjectionMatrix();introFrom.copy(camera.position);placeDragHint();return;}
   if(camMode===0){back=V.cam[0];up=V.cam[1];ahead=3.5;lookUp=V.cam[2];}else if(camMode===1){back=12;up=5.5;ahead=4;lookUp=1;}else{back=V.hood;up=1.2;ahead=12;lookUp=1.1;}
   const tx=car.x-fx*back,tz=car.z-fz*back;
-  const below=BK.on&&car.y<BK.Y0-.5&&(car.bunker||Math.abs(bunkerLocal(car.x,car.z)[1])<BK.HW+1);
+  const[bu,bv]=BK.on?bunkerLocal(car.x,car.z):[0,0];   // only when actually over the shaft or tunnel, not anywhere along its line
+  const below=BK.on&&car.y<BK.Y0-.5&&(car.bunker||(bu>BK.H0-2&&bu<BK.C1+3&&Math.abs(bv)<Math.max(BK.HW,BK.CW)+1));
   let ty=below?car.y+up:Math.max(car.y+up,heightAt(tx,tz)+1.2);
   if(car.y<LAKE_Y-1.6)ty=Math.max(Math.min(ty,LAKE_Y-.5),heightAt(tx,tz)+1.2);   // dive with the truck: keep the camera under the surface
   const k=camMode===2?1:1-Math.exp(-dt*5);
