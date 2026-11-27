@@ -73,12 +73,12 @@ Browsers only see a controller after you press one of its buttons with the page 
 
 - A grid of streets with traffic lights, cars that stop at red lights and give way at crossings, and people walking the pavements
 - Traffic you can shove: hit a car and it slides and spins away, then pulls back into its lane
-- Police in 80s black-and-white cruisers: knock over a pedestrian or rear-end a cop car to earn a wanted star (shown beside the sheep count), and dive under the lake to lose them
+- Police in 80s black-and-white cruisers: knock over a pedestrian or rear-end a cop car to earn a wanted star (shown beside the sheep count), and dive under the lake to lose them. Their flashing lights wash the road red and blue
 - Town runs: errands between nine stops downtown (City Hall, Corner Café, Post Office, Flower Shop, Bakery, Grocer, Fire Station, Bookshop and Town Library), each marked by a shop sign, carrying mail sacks, flower pots, birthday cakes and more
 - Orange trees along the streets: bump them to knock oranges down
 - Fire hydrants on the pavements: knock one over and it gushes water into the air and soaks the road around it
 - Wooden piers out over the lake that you can drive along, and off
-- Weather: heavy fog, or rain with wet dark roads and the lights coming on. It changes by itself every minute or two, or set it from the pause menu
+- Weather: heavy fog, or rain with wet dark roads that reflect street lamps, traffic lights and headlights at night, and the lights coming on. It changes by itself every minute or two, or set it from the pause menu
 
 ## Files
 

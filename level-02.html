@@ -851,6 +851,7 @@ for(const L of locs){
 
 // ---------- downtown: streets, crosswalks, buildings, traffic lights, traffic and pedestrians ----------
 const cityBoxes=[];      // solid building footprints (axis-aligned) the truck can't drive through
+const reflSrc=[];   // lights that leave a glowing streak on the road when it's wet at night
 const cityGlow=[];       // [material, strength]: windows, street lamps and car lights that light up after dark
 const signals=[];        // one traffic signal controller per intersection
 const cityCars=[],peds=[];
@@ -1112,6 +1113,7 @@ const crng=mulberry(31337),CR=(a,b)=>a+(b-a)*crng(),cpick=a=>a[Math.floor(crng()
       pole.setMatrixAt(i,dummy0.matrix);arm.setMatrixAt(i,dummy0.matrix);tr.setMatrixAt(i,dummy0.matrix);
       for(const dy of[0,.72]){dummy0.position.set(x,Y+dy,z);dummy0.rotation.set(0,ry+Math.PI,0);dummy0.updateMatrix();bars.setMatrixAt(bb++,dummy0.matrix);}
       for(const s of[-.22,.22]){dummy0.position.set(x,Y,z);dummy0.rotation.set(0,ry+Math.PI,0);dummy0.updateMatrix();const m=dummy0.matrix.clone();m.multiply(new THREE.Matrix4().makeTranslation(s,0,0));head.setMatrixAt(hb++,m);}
+      reflSrc.push({x:x+Math.sin(ry+Math.PI)*1.55,z:z+Math.cos(ry+Math.PI)*1.55,col:new THREE.Color('#ffcf86'),w:2.2,L:13,k:1});
       addObs(x,z,.3);});
     pole.castShadow=bars.castShadow=arm.castShadow=tr.castShadow=true;scene.add(pole,bars,tr,arm,head);
     // sagging wires between neighbouring poles (two per crossbar)
@@ -1136,7 +1138,8 @@ const crng=mulberry(31337),CR=(a,b)=>a+(b-a)*crng(),cpick=a=>a[Math.floor(crng()
         for(const[hx,hy,sc] of heads){const hd=new THREE.Group();hd.position.set(hx,hy,0);hd.scale.setScalar(sc);g.add(hd);
           mesh(B(.52,1.42,.36),boxM,0,0,0,hd);
           [['r',.44],['y',0],['g',-.44]].forEach(([c,y])=>{const l=new THREE.Mesh(lampG,m[c]);l.position.set(0,y,.185);hd.add(l);const v=new THREE.Mesh(visorG,boxM);v.position.set(0,y+.2,.3);hd.add(v);});}
-        g.position.set(px,Y,pz);g.rotation.y=Math.atan2(dx,dz);scene.add(g);addObs(px,pz,.3);}}
+        g.position.set(px,Y,pz);g.rotation.y=Math.atan2(dx,dz);scene.add(g);addObs(px,pz,.3);
+        { const th=Math.atan2(dx,dz),hx=-3.9;reflSrc.push({x:px+Math.cos(th)*hx,z:pz-Math.sin(th)*hx,sig,axis,w:1.5,L:11,k:1.5,col:new THREE.Color()}); }}}
   }
   // traffic: little cars that drive the grid, keep to the right, stop at red lights, wait for people on the crossings
   { const carCols=['#c8453a','#2f7489','#f1c453','#7d9a43','#eeece4','#3a3d42','#e0703f','#8a6bb8','#5fb3c0','#d85a7f'];
@@ -1274,6 +1277,9 @@ const copLightR=new THREE.MeshBasicMaterial({color:'#ff4a4a'}),copLightB=new THR
 // an 80s liftback cruiser: white upper body over black skirts, black hood, red/cyan bar, push bar up front, little wing at the back
 function copSide(pts,w,mat,par){const sh=new THREE.Shape();sh.moveTo(pts[0][0],pts[0][1]);for(let k=1;k<pts.length;k++)sh.lineTo(pts[k][0],pts[k][1]);sh.closePath();
   const g=new THREE.ExtrudeGeometry(sh,{depth:w,bevelEnabled:false});g.rotateY(-Math.PI/2);g.translate(w/2,0,0);return mesh(g,mat,0,0,0,par);}   // profile drawn as (z forward, y up), extruded across the car
+const copGlowTex=(()=>{const cv=document.createElement('canvas');cv.width=cv.height=128;const c=cv.getContext('2d'),g=c.createRadialGradient(64,64,0,64,64,64);
+  g.addColorStop(0,'rgba(255,255,255,1)');g.addColorStop(.35,'rgba(255,255,255,.55)');g.addColorStop(1,'rgba(255,255,255,0)');c.fillStyle=g;c.fillRect(0,0,128,128);return new THREE.CanvasTexture(cv);})();
+const copGlowG=new THREE.PlaneGeometry(1,1).rotateX(-Math.PI/2);
 function makeCop(){const g=new THREE.Group(),black=toon('#24272c'),white=toon('#f4f4f0'),glass=toon('#2f3a40'),orange=toon('#f39a2b'),red=toon('#8e1f22'),rim=toon('#d9dbdc'),plate=toon('#ececec');
   copSide([[-2.2,.3],[2.12,.3],[2.25,.48],[2.2,.66],[-2.22,.66],[-2.24,.45]],1.96,black,g);   // lower body + bumpers
   copSide([[-2.18,.64],[2.18,.64],[2.24,.8],[2.12,.98],[-2.12,1.02],[-2.2,.86]],1.94,white,g);   // white belt
@@ -1295,7 +1301,10 @@ function makeCop(){const g=new THREE.Group(),black=toon('#24272c'),white=toon('#
   const tyre=new THREE.CylinderGeometry(.36,.36,.26,14).rotateZ(Math.PI/2),hub=new THREE.CylinderGeometry(.21,.21,.04,6).rotateZ(Math.PI/2);
   for(const s of[-1,1])for(const z of[1.35,-1.35]){mesh(tyre,toon('#1d1d1d'),s*.88,.36,z,g);mesh(hub,rim,s*1.02,.36,z,g);
     copSide([[z-.58,.46],[z-.46,.78],[z+.46,.78],[z+.58,.46]],.08,black,g).position.x=s*.97;}   // flared arches
-  scene.add(g);return{g,lr,lb};}
+  // the light bar washes the ground round the car: red on one side, blue on the other, flashing
+  const glow=[-1,1].map(s=>{const m=new THREE.Mesh(copGlowG,new THREE.MeshBasicMaterial({map:copGlowTex,color:s<0?'#ff2a2a':'#2a6bff',transparent:true,opacity:0,blending:THREE.AdditiveBlending,depthWrite:false,toneMapped:false,polygonOffset:true,polygonOffsetFactor:-5,polygonOffsetUnits:-5}));
+    m.position.set(s*1.9,.09,-.3);m.scale.set(6.5,1,8);m.renderOrder=3;g.add(m);return m;});
+  scene.add(g);return{g,lr,lb,glow};}
 function copBanner(html,show){if(!police.banner){const d=document.createElement('div');d.style.cssText='position:fixed;left:50%;top:18%;transform:translateX(-50%);z-index:30;pointer-events:none;font-family:Fredoka,system-ui,sans-serif;text-align:center;color:#fff;text-shadow:0 3px 0 #2b2420,0 0 18px rgba(0,0,0,.4);transition:opacity .3s;opacity:0';document.body.appendChild(d);police.banner=d;}
   if(html!==null)police.banner.innerHTML=html;police.banner.style.opacity=show?1:0;}
 function poof(x,y,z){for(let k=0;k<14;k++)puff(x+R(-.6,.6),y+R(.2,1.6),z+R(-.6,.6),1.6,R(-3,3),R(-3,3),'#f4efe2');}   // silent: just the puff
@@ -1352,6 +1361,9 @@ function updateCops(dt){
     c.stuck=Math.max(0,c.stuck-dt*.02);if(c.stuck>3&&!c.leaving&&Math.hypot(car.x-c.x,car.z-c.z)>40){c.stuck=0;const old=cops.indexOf(c);scene.remove(c.g);cops.splice(old,1);spawnCop();return;}   // wedged on a corner out of sight: radio for a fresh car
     const gy=heightAt(c.x,c.z);c.g.position.set(c.x,gy,c.z);c.g.rotation.y=c.h;
     c.lr.material=blink?copLightR:copLightB;c.lb.material=blink?copLightB:copLightR;
+    { const k=.22+.78*smooth(.1,.55,ENV.night),hi=k*.95,lo=k*.18;   // ground wash: the lit side glows, the other dims
+      c.glow[0].material.color.set(blink?'#ff2a2a':'#2a6bff');c.glow[1].material.color.set(blink?'#2a6bff':'#ff2a2a');
+      c.glow[0].material.opacity=hi;c.glow[1].material.opacity=lo+(hi-lo)*.35; }
     const d2=Math.hypot(car.x-c.x,car.z-c.z);if(!c.leaving)nearest=Math.min(nearest,d2);
   });
   for(let i=cops.length-1;i>=0;i--){const c=cops[i];if(c.leaving&&Math.hypot(car.x-c.x,car.z-c.z)>140){scene.remove(c.g);cops.splice(i,1);}}
@@ -1928,6 +1940,34 @@ for(let k=0;k<RAIN_N;k++)rainD.push([wr(-RAIN_H,RAIN_H),wr(-RAIN_Y,RAIN_Y),wr(-R
 const rainGeo=new THREE.BufferGeometry();rainGeo.setAttribute('position',new THREE.BufferAttribute(rainP,3));
 const rainMesh=new THREE.LineSegments(rainGeo,new THREE.LineBasicMaterial({color:'#f2f7fa',transparent:true,opacity:0,depthWrite:false}));rainMesh.frustumCulled=false;rainMesh.visible=false;scene.add(rainMesh);
 let rainSnd=null;
+// wet-road reflections: a soft streak under each light, stretched toward the camera
+const reflTex=(()=>{const cv=document.createElement('canvas');cv.width=64;cv.height=256;const c=cv.getContext('2d'),img=c.createImageData(64,256);
+  for(let y=0;y<256;y++){const v=y/255,along=Math.pow(1-v,1.6)*(v<.04?v/.04:1);const rip=.65+.35*Math.sin(y*.55+Math.sin(y*.13)*3);
+    for(let x=0;x<64;x++){const u=(x-31.5)/32,a=Math.exp(-u*u*5)*along*rip;const i=(y*64+x)*4;img.data[i]=img.data[i+1]=img.data[i+2]=255;img.data[i+3]=Math.min(255,a*255);}}
+  c.putImageData(img,0,0);const t=new THREE.CanvasTexture(cv);t.colorSpace=THREE.SRGBColorSpace;return t;})();
+let reflMesh=null;const _rc=new THREE.Color(),REFL_CAR=2;   // two streaks per traffic car: headlights and tail lights
+function updateReflections(N){
+  if(!reflMesh){const n=reflSrc.length+cityCars.length*REFL_CAR+2+12;
+    reflMesh=new THREE.InstancedMesh(new THREE.PlaneGeometry(1,1).rotateX(-Math.PI/2).translate(0,0,.5),new THREE.MeshBasicMaterial({map:reflTex,transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,toneMapped:false,polygonOffset:true,polygonOffsetFactor:-4,polygonOffsetUnits:-4}),n);
+    reflMesh.instanceColor=new THREE.InstancedBufferAttribute(new Float32Array(n*3),3);reflMesh.frustumCulled=false;reflMesh.renderOrder=2;scene.add(reflMesh);}
+  const night=smooth(.15,.6,N),cx=camera.position.x,cz=camera.position.z;
+  const anyPud=typeof hydrants!=='undefined'&&hydrants.some(h=>h.wet>.02);
+  reflMesh.visible=night>.02&&((WX.wet||0)>.02||anyPud);if(!reflMesh.visible)return;
+  let n=0;
+  const cap=reflMesh.instanceMatrix.count;
+  const put=(x,z,col,k,w,L)=>{if(n>=cap||!inCity(x,z,2))return;const dx=cx-x,dz=cz-z,d=Math.hypot(dx,dz);if(d>130||d<1)return;
+    let wet=WX.wet||0;if(anyPud)for(const h of hydrants)if(h.wet>.02){const r=Math.hypot(x-h.x,z-h.z);if(r<h.r)wet=Math.max(wet,h.wet*(1-r/h.r*.6));}
+    const a=wet*night*k;if(a<.01)return;
+    const len=L*(.7+Math.min(1,d/45)*.6);dummy0.position.set(x,CITY.Y+.175,z);dummy0.rotation.set(0,Math.atan2(dx,dz),0);dummy0.scale.set(w,1,Math.min(len,d*.8));dummy0.updateMatrix();
+    reflMesh.setMatrixAt(n,dummy0.matrix);_rc.copy(col).multiplyScalar(Math.min(1.6,a*1.9));reflMesh.setColorAt(n,_rc);n++;};
+  for(const r of reflSrc){if(r.sig){const st=r.sig[r.axis]||'r';r.col.set(r.sig.ON[st]);}put(r.x,r.z,r.col,r.k,r.w,r.L);}
+  for(const c of cityCars){const h=c.h+(c.yaw||0),fx=Math.sin(h),fz=Math.cos(h),L=c.half||2.1;
+    put(c.x+fx*(L+.4),c.z+fz*(L+.4),_headC,.9,2,9);put(c.x-fx*(L+.3),c.z-fz*(L+.3),_tailC,.8,1.8,7);}
+  { const bl=Math.floor(performance.now()/180)%2;for(const c of cops){const fx=Math.sin(c.h),fz=Math.cos(c.h),rx=fz,rz=-fx;
+      put(c.x+rx*.6,c.z+rz*.6,bl?_copR:_copB,1.3,2.2,12);put(c.x-rx*.6,c.z-rz*.6,bl?_copB:_copR,.5,2.2,12);} }   // police lights on the wet road
+  { const on=lampMat.opacity,fx=Math.sin(car.h),fz=Math.cos(car.h);if(on>.05)put(car.x+fx*2.6,car.z+fz*2.6,_headC,on*.8,2.2,9);put(car.x-fx*2.4,car.z-fz*2.4,_tailC,.7,1.9,6); }   // your own headlights
+  reflMesh.count=n;reflMesh.instanceMatrix.needsUpdate=true;if(reflMesh.instanceColor)reflMesh.instanceColor.needsUpdate=true;}
+const _headC=new THREE.Color('#fff1c8'),_tailC=new THREE.Color('#ff3424'),_copR=new THREE.Color('#ff2a2a'),_copB=new THREE.Color('#2a6bff');
 function cycleWeather(){const order=['auto','clear','fog','rain'];WX.mode=order[(order.indexOf(WX.mode)+1)%order.length];if(WX.mode!=='auto')WX.cur=WX.mode;else WX.t=wr(60,120);
   try{localStorage.setItem('sunfield-weather',WX.mode);}catch(e){}syncWeatherBtn();todHTML='';}
 function syncWeatherBtn(){const el=$('weatherTxt');if(el)el.textContent='Weather: '+WX.mode[0].toUpperCase()+WX.mode.slice(1);}
@@ -3020,6 +3060,7 @@ function updateDayCycle(dt){
     const ic={Morning:'sun-horizon',Day:'sun',Evening:'sun-horizon',Dusk:'cloud-moon',Night:'moon-stars',Dawn:'sun-horizon'}[ENV.n.split(' ')[1]]||'sun';
     const txt=`<i class="ph-fill ph-${ic}"></i> ${h}:${m<10?'0':''}${m}${todFrozen?' <i class="ph-fill ph-lock-simple" title="Time frozen"></i>':''}${WX.cur==='fog'?' <i class="ph-fill ph-cloud-fog" title="Fog"></i>':WX.cur==='rain'?' <i class="ph-fill ph-cloud-rain" title="Rain"></i>':''}`;if(todHTML!==txt){todHTML=txt;$('tod').innerHTML=txt;} }
   if(ENV.n!==lastTodLabel)lastTodLabel=ENV.n;
+  updateReflections(N);
 }
 
 // ---------- loop ----------
