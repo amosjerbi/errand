@@ -89,8 +89,8 @@
   #start{--ctaB:max(48px,7vh);position:fixed;inset:0;z-index:10;pointer-events:none;background:linear-gradient(180deg,rgba(40,90,100,.18),transparent 30%,transparent 62%,rgba(40,25,30,.35))}
   #start>*{pointer-events:auto}
   #start>.howto:not(.open),#start>#howBack:not(.open),#start>.brand{pointer-events:none}
-  #start .brand{position:absolute;top:22px;left:0;right:0;text-align:center;pointer-events:none}
-  #start h1{margin:0;white-space:nowrap;font-size:clamp(28px,8vw,64px);line-height:.92;font-weight:700;color:var(--paper);text-shadow:4px 4px 0 var(--ink);letter-spacing:.02em;text-transform:uppercase}
+  #start .brand{position:absolute;top:max(70px,13vh);left:0;right:0;text-align:center;pointer-events:none}
+  #start h1{margin:0;white-space:nowrap;font-size:clamp(56px,12vw,150px);line-height:.92;font-weight:700;color:var(--paper);text-shadow:6px 6px 0 var(--ink);letter-spacing:.02em;text-transform:uppercase}
   #start .arrow{position:absolute;top:44%;width:64px;height:64px;margin-top:-32px;background:transparent;border:0;color:var(--paper);font:700 64px/1 'Fredoka',sans-serif;text-shadow:4px 4px 0 var(--ink);cursor:pointer;padding:0}
   #start .arrow:active{transform:translateY(3px)}
   #vPrev{left:max(8px,calc(50% - 330px))}#vNext{right:max(8px,calc(50% - 330px))}
@@ -125,7 +125,7 @@
   .howto.open{opacity:1;pointer-events:auto;transform:translate(-50%,-50%) scale(1)}
   .howto .h{font-size:20px;display:block;margin-bottom:2px}.howto p{margin:6px 0}
   .howto .close{position:absolute;right:8px;top:4px;width:34px;height:34px;background:none;border:0;font-size:28px;line-height:1;cursor:pointer;color:var(--ink)}
-  @media (max-width:600px){#start .brand{top:max(88px,12vh)}#start h1{font-size:15vw}}
+  @media (max-width:600px){#start .brand{top:max(96px,14vh)}#start h1{font-size:17vw;text-shadow:4px 4px 0 var(--ink)}}
   @media (max-height:700px){#start{--ctaB:24px}#vBlurb{display:none}#start .brand{top:12px}}
   #touch{position:fixed;inset:auto 0 0 0;height:160px;z-index:6;display:none;pointer-events:none}
   #touch .b{position:absolute;bottom:22px;width:76px;height:76px;border-radius:50%;background:rgba(246,236,217,.75);border:3px solid var(--ink);display:grid;place-items:center;font-size:28px;font-weight:700;pointer-events:auto;touch-action:none}
@@ -2248,7 +2248,7 @@ function placeDragHint(){const el=$('dragHint');if(!el)return;camera.updateMatri
   const who=document.querySelector('#start .who').getBoundingClientRect();
   const y=Math.min((maxY+1)/2*innerHeight-4,who.top-26);el.style.left=((sx+1)/2*innerWidth)+'px';el.style.top=y+'px';}
 // intro shot: low behind-left 3/4 view of the truck, aimed up so the sky (and the title) sit above it
-const INTRO={yaw:.45,r:7,rP:11,h:2,look:1.35,lookP:1.9};window.__INTRO=INTRO;
+const INTRO={yaw:.45,r:9.5,rP:11,h:1.6,look:1.75,lookP:2.3};window.__INTRO=INTRO;
 const introFrom=new THREE.Vector3(),introLook=new THREE.Vector3(),tmpLook=new THREE.Vector3();let introT=1;
 function updateCamera(dt,t){
   const fx=Math.sin(car.h),fz=Math.cos(car.h);
