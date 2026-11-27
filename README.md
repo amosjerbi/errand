@@ -4,6 +4,8 @@ A cosy Three.js driving game: pick a vehicle, run errands around a painterly val
 
 Play it at [sun.ajerbi.com](https://sun.ajerbi.com).
 
+Inspired by the work of [iorama.studio](https://www.instagram.com/iorama.studio/).
+
 ![Start screen with Bruno, the blue dropside truck](screenshots/start-screen.png)
 
 ![Driving through the sunflower field](screenshots/sunflower-field-drive.png)
