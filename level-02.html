@@ -412,6 +412,12 @@ const locs=LOC_DEFS.map((d,n)=>{
   const S0=CITY.ST,A=CITY.AV,La=CITY.LANE;
   locs.push({name:'Corner Café',kind:'cafe',city:true,i:roadIdxNear(280,S0[3]+La),f:0,x:280,z:S0[3]+La,h:CITY.Y,sx:0,sz:1,tx:1,tz:0,bx:280,bz:S0[3]+La});
   locs.push({name:'Post Office',kind:'post',city:true,i:roadIdxNear(220,S0[1]-La),f:0,x:220,z:S0[1]-La,h:CITY.Y,sx:0,sz:-1,tx:-1,tz:0,bx:220,bz:S0[1]-La});
+  // more shops round the grid, each a mid-block kerb stop with a sign on the pavement: av = on an avenue (lane side -1 west / +1 east), st = on a street (-1 south / +1 north)
+  for(const[name,kind,av,c,side,m] of[['Flower Shop','flowers',1,A[0],-1,-75],['Bakery','bakery',1,A[2],1,75],['Grocer','grocer',1,A[1],1,-75],['Fire Station','fire',1,A[2],-1,-25],
+      ['Bookshop','books',0,S0[2],-1,220],['Town Library','library',0,S0[4],1,280]]){
+    const x=av?c+side*La:m,z=av?m:c+side*La,sx=av?side:0,sz=av?0:side,tx=av?0:side,tz=av?-side:0;   // pull up on the lane next to that pavement
+    locs.push({name,kind,city:true,town:true,i:roadIdxNear(x,z),f:0,x,z,h:CITY.Y,sx,sz,tx,tz,bx:x,bz:z,sign:[av?c+side*(CITY.RW+CITY.SW*.55):m,av?m:c+side*(CITY.RW+CITY.SW*.55)]});}
+  for(const L of locs)if(L.city||L.kind==='village')L.town=true;
 }
 
 // off-road destinations: no road leads there
@@ -2232,6 +2238,14 @@ const CARGO=[
   {name:'Beach balls',items:6,r:.2,color:'#ffffff',shape:'bball',mass:.4,value:60,beach:true},
   {name:'Coconuts',items:9,r:.13,color:'#6b4a2e',shape:'lump',mass:1.1,value:65,beach:true},
   {name:'Watermelons',items:4,r:.26,color:'#3f7a3a',shape:'melon',mass:2,value:80,beach:true},
+  // town runs
+  {name:'Mail sacks',items:7,r:.17,color:'#d8c8a0',shape:'lump',mass:1,value:55,town:true},
+  {name:'Flower pots',items:8,r:.13,color:'#d9645a',shape:'tub',mass:.9,value:60,town:true},
+  {name:'Birthday cakes',items:3,r:.2,color:'#fbefe0',shape:'tub',mass:1.2,value:85,town:true},
+  {name:'Baguettes',items:10,r:.11,color:'#d9a35a',shape:'loaf',mass:.6,value:50,town:true},
+  {name:'Stack of parcels',items:3,r:.26,color:'#b98552',shape:'box',mass:2,value:70,town:true},
+  {name:'Milk jugs',items:8,r:.13,color:'#f4f4ee',shape:'jug',mass:1,value:60,town:true},
+  {name:'Library books',items:2,r:.3,color:'#2f7489',shape:'box',mass:3,value:65,town:true},
 ];
 function itemMesh(c){
   let g;
@@ -2322,6 +2336,19 @@ function updateFallen(dt){
   }
 }
 
+// ---------- town shop signs: a little painted board on a post at each town stop ----------
+{ const icons={flowers:'🌷',bakery:'🥖',grocer:'🍎',fire:'🚒',books:'📚',library:'🏛️'},cols={flowers:'#d9645a',bakery:'#c98a3e',grocer:'#5f8a3a',fire:'#c8392f',books:'#2f7489',library:'#6b5a8a'};
+  const postM=toon('#3a3330');
+  for(const L of locs){if(!L.sign)continue;const[sx,sz]=L.sign,g=new THREE.Group();g.position.set(sx,CITY.Y,sz);scene.add(g);
+    const cv=document.createElement('canvas');cv.width=512;cv.height=192;const c=cv.getContext('2d');
+    c.fillStyle=cols[L.kind]||'#2b2420';c.beginPath();c.roundRect(0,0,512,192,28);c.fill();c.fillStyle='#f6ecd9';c.beginPath();c.roundRect(12,12,488,168,20);c.fill();
+    c.fillStyle=cols[L.kind]||'#2b2420';c.font='600 64px Fredoka, system-ui, sans-serif';c.textAlign='center';c.textBaseline='middle';c.fillText(`${icons[L.kind]||''} ${L.name}`,256,100);
+    const tex=new THREE.CanvasTexture(cv);tex.colorSpace=THREE.SRGBColorSpace;tex.anisotropy=4;const bm=new THREE.MeshBasicMaterial({map:tex});
+    mesh(B(.14,3.6,.14),postM,0,1.8,0,g);
+    // a blade sign: square to the kerb so drivers coming either way can read it
+    const bd=new THREE.Group();bd.position.y=3.1;bd.rotation.y=L.sx?0:Math.PI/2;g.add(bd);mesh(B(3.3,1.25,.07),toon(cols[L.kind]||'#2b2420'),0,0,0,bd);
+    for(const s of[1,-1]){const pl=new THREE.Mesh(new THREE.PlaneGeometry(3.2,1.2),bm);pl.position.z=s*.04;pl.rotation.y=s>0?0:Math.PI;bd.add(pl);}}
+}
 // ---------- markers ----------
 const marker=new THREE.Group();
 { const ring=new THREE.Mesh(new THREE.TorusGeometry(5.5,.25,8,40),new THREE.MeshBasicMaterial({color:'#f1c453'}));ring.rotation.x=Math.PI/2;marker.add(ring);
@@ -2582,8 +2609,10 @@ function pick(a){return a[Math.floor(Math.random()*a.length)];}
 let lastLoc=-1;
 function newJob(){
   const beachIdx=locs.map((l,i)=>l.beach?i:-1).filter(i=>i>=0),landIdx=locs.map((l,i)=>l.beach?-1:i).filter(i=>i>=0);
-  let from,to;
-  if(beachIdx.length&&Math.random()<.35){
+  let from,to,isTown=false;const townIdx=locs.map((l,i)=>l.town?i:-1).filter(i=>i>=0);
+  if(townIdx.length>2&&Math.random()<(inCity(car.x,car.z,40)?.6:.3)){   // a town run: both ends downtown (more likely when you're already there)
+    isTown=true;do{from=pick(townIdx);}while(from===lastLoc&&Math.random()<.85);do{to=pick(townIdx);}while(to===from);
+  }else if(beachIdx.length&&Math.random()<.35){
     const r=Math.random();
     if(r<.3){from=pick(beachIdx);to=pick(beachIdx.filter(i=>i!==from));}          // along the sand
     else if(r<.65){from=pick(landIdx);to=pick(beachIdx);}                         // supplies to the beach
@@ -2592,15 +2621,15 @@ function newJob(){
     do{from=pick(landIdx);}while(from===lastLoc&&Math.random()<.85);
     do{to=pick(landIdx);}while(to===from);
   }
-  const isBeach=locs[from].beach||locs[to].beach;
-  const cargo=pick(CARGO.filter(c=>isBeach?(c.beach||Math.random()<.15):!c.beach));
-  job={from,to,cargo,phase:'pickup',t:0,left:0,beach:isBeach};
+  const isBeach=!isTown&&(locs[from].beach||locs[to].beach);
+  const cargo=pick(CARGO.filter(c=>isTown?c.town:isBeach?(c.beach||(!c.town&&Math.random()<.15)):!c.beach&&!c.town));
+  job={from,to,cargo,phase:'pickup',t:0,left:0,beach:isBeach,town:isTown};
   refreshJob();
 }
 function refreshJob(){
   if(!job)return;const c=job.cargo;
-  if(job.phase==='pickup'){$('jobLbl').textContent=job.beach?'🏖️ Beach run · Pick up':'Pick up';$('jobTxt').textContent=`${c.name} at ${locs[job.from].name}`;$('jobSub').textContent=(locs[job.from].offroad?'Off-road: no road goes there! ':'')+`Then deliver to ${locs[job.to].name}`+(locs[job.to].offroad?' (off-road)':'');$('items').innerHTML='';}
-  else{$('jobLbl').textContent=job.beach?'🏖️ Beach run · Deliver':'Deliver';$('jobTxt').textContent=`${c.name} to ${locs[job.to].name}`;$('jobSub').textContent=locs[job.to].beach?'Soft sand ahead: it gets slippery!':locs[job.to].offroad?'Off-road: cut across the fields, gently!':'Take it gently over the bumps';
+  if(job.phase==='pickup'){$('jobLbl').textContent=job.town?'🏘️ Town run · Pick up':job.beach?'🏖️ Beach run · Pick up':'Pick up';$('jobTxt').textContent=`${c.name} at ${locs[job.from].name}`;$('jobSub').textContent=(locs[job.from].offroad?'Off-road: no road goes there! ':'')+`Then deliver to ${locs[job.to].name}`+(locs[job.to].offroad?' (off-road)':'');$('items').innerHTML='';}
+  else{$('jobLbl').textContent=job.town?'🏘️ Town run · Deliver':job.beach?'🏖️ Beach run · Deliver':'Deliver';$('jobTxt').textContent=`${c.name} to ${locs[job.to].name}`;$('jobSub').textContent=locs[job.to].beach?'Soft sand ahead: it gets slippery!':locs[job.to].offroad?'Off-road: cut across the fields, gently!':'Take it gently over the bumps';
     $('items').innerHTML=loose.map(it=>`<i class="${it.lost?'lost':''}" style="background:${c.color}"></i>`).join('');}
 }
 function loseItem(){
