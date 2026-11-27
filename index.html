@@ -20,9 +20,8 @@
   #vig{position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 55%,transparent 55%,rgba(40,25,30,.35) 100%)}
   .hud{position:fixed;pointer-events:none;z-index:5}
   .card{background:var(--paper);border:3px solid var(--ink);border-radius:14px;box-shadow:4px 4px 0 rgba(43,36,32,.85);padding:10px 14px}
-  #job{top:16px;left:16px;max-width:min(340px,calc(100vw - 32px));opacity:0;transform:translateY(-10px);pointer-events:none;transition:opacity .2s,transform .2s}
-  #job.open{opacity:1;transform:none}
-  #job.open{top:50%;left:50%;transform:translate(-50%,-50%);width:min(340px,calc(100vw - 32px));box-sizing:border-box;z-index:9;pointer-events:auto;padding:16px 18px}
+  #job{top:50%;left:50%;width:min(340px,calc(100vw - 32px));box-sizing:border-box;padding:16px 18px;opacity:0;transform:translate(-50%,-50%) scale(.92);pointer-events:none;transition:opacity .2s,transform .2s}
+  #job.open{opacity:1;transform:translate(-50%,-50%) scale(1);z-index:9;pointer-events:auto}
   #job .pauseHead{display:none;font-size:26px;font-weight:700;text-align:center;margin:0 0 10px}
   #job.open .pauseHead{display:block}
   #job .pauseBtns{display:none;flex-direction:column;gap:8px;margin-top:14px}
