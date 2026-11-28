@@ -187,9 +187,9 @@
 <div id="grain"></div><div id="vig"></div>
 
 <div id="pauseBack"></div>
-<div id="job" class="hud card" role="dialog" aria-label="Paused"><div class="pauseHead">Sunfield</div><div class="lbl" id="jobLbl">Errand</div><div class="txt" id="jobTxt">—</div><div class="sub" id="jobSub"></div><div id="items"></div><div class="tally">◎ <span id="coins">0</span> · ✅ <span id="dels">0</span> errands done · ⏱ <span id="timer">0:00</span></div><div class="tankUp"><div class="row"><span><i class="ph-fill ph-fire"></i> Boost tank upgrade</span><b id="tankCount">3 tanks</b></div><div class="tankBar" id="tankBar"><i></i><i></i><i></i></div><small id="tankTxt">Complete 3 errands = +1 boost tank</small></div><div class="pauseBtns"><button id="resumeBtn"><i class="ph-fill ph-play"></i> Resume</button><button id="freezeBtn" aria-pressed="false"><i class="ph-fill ph-clock"></i> <span id="freezeTxt">Freeze time: Off</span></button><button id="skipTodBtn"><i class="ph-fill ph-sun-horizon"></i> Next time of day</button><button id="lvBtn" style="display:none"></button></div></div>
+<div id="job" class="hud card" role="dialog" aria-label="Paused"><div class="pauseHead">Sunfield</div><div class="lbl" id="jobLbl">Errand</div><div class="txt" id="jobTxt">—</div><div class="sub" id="jobSub"></div><div id="items"></div><div class="tally"><i class="ph-fill ph-coin"></i> <span id="coins">0</span> · <i class="ph-fill ph-check-circle"></i> <span id="dels">0</span> errands done · <i class="ph-fill ph-timer"></i> <span id="timer">0:00</span></div><div class="tankUp"><div class="row"><span><i class="ph-fill ph-fire"></i> Boost tank upgrade</span><b id="tankCount">3 tanks</b></div><div class="tankBar" id="tankBar"><i></i><i></i><i></i></div><small id="tankTxt">Complete 3 errands = +1 boost tank</small></div><div class="pauseBtns"><button id="resumeBtn"><i class="ph-fill ph-play"></i> Resume</button><button id="freezeBtn" aria-pressed="false"><i class="ph-fill ph-clock"></i> <span id="freezeTxt">Freeze time: Off</span></button><button id="skipTodBtn"><i class="ph-fill ph-sun-horizon"></i> Next time of day</button><button id="lvBtn" style="display:none"></button></div></div>
 <div id="lvBanner"></div>
-<div id="stats" class="hud"><div class="small" id="tod"><i class="ph-fill ph-sun-horizon"></i> 7:25</div><div class="small" id="flock" title="Sheep in the truck"><svg viewBox="0 0 20 16" aria-hidden="true"><g fill="currentColor"><circle cx="6" cy="7" r="3.4"/><circle cx="10" cy="5.6" r="3.6"/><circle cx="13.6" cy="7.4" r="3.2"/><circle cx="9.4" cy="9.2" r="3.4"/><rect x="6" y="10" width="1.8" height="5" rx=".9"/><rect x="12" y="10" width="1.8" height="5" rx=".9"/></g><ellipse cx="3.4" cy="6.4" rx="2.6" ry="2.2" fill="#3a302b"/><ellipse cx="2.6" cy="4.3" rx="1.2" ry=".7" fill="#3a302b" transform="rotate(-25 2.6 4.3)"/></svg><span id="flockN">0/3</span></div><div class="small" id="pax" title="Passengers in the back"><i class="ph-fill ph-person-simple"></i><span id="paxN">0/2</span></div><div class="small" id="wanted" title="Wanted level">★★★★★</div><div class="small" id="paxTo"></div></div>
+<div id="stats" class="hud"><div class="small" id="tod"><i class="ph-fill ph-sun-horizon"></i> 7:25</div><div class="small" id="flock" title="Sheep in the truck"><svg viewBox="0 0 20 16" aria-hidden="true"><g fill="currentColor"><circle cx="6" cy="7" r="3.4"/><circle cx="10" cy="5.6" r="3.6"/><circle cx="13.6" cy="7.4" r="3.2"/><circle cx="9.4" cy="9.2" r="3.4"/><rect x="6" y="10" width="1.8" height="5" rx=".9"/><rect x="12" y="10" width="1.8" height="5" rx=".9"/></g><ellipse cx="3.4" cy="6.4" rx="2.6" ry="2.2" fill="#3a302b"/><ellipse cx="2.6" cy="4.3" rx="1.2" ry=".7" fill="#3a302b" transform="rotate(-25 2.6 4.3)"/></svg><span id="flockN">0/3</span></div><div class="small" id="pax" title="Passengers in the back"><i class="ph-fill ph-person-simple"></i><span id="paxN">0/2</span></div><div class="small" id="wanted" title="Wanted level"><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i></div><div class="small" id="paxTo"></div></div>
 <div id="compass" class="hud"><div id="arrow"><svg id="arrSvg" width="26" height="26" viewBox="0 0 26 26"><path d="M13 2 L22 22 L13 17 L4 22 Z" fill="#e0703f" stroke="#2b2420" stroke-width="2.4" stroke-linejoin="round"/></svg></div><div id="dist">0 m</div></div>
 <div id="speed" class="hud"><span class="n" id="spd">0</span> <span class="u">km/h</span><div id="boostRow"><i class="ph-fill ph-fire boostIc"></i><div id="boostBar"><div class="seg"><i></i></div><div class="seg"><i></i></div><div class="seg"><i></i></div></div></div></div>
 <div id="toast" class="hud card"></div>
@@ -208,7 +208,7 @@
     <div id="vName" role="status"></div>
     <div id="vStats"></div>
   </div>
-  <div class="dragHint" id="dragHint">↻ Drag to spin</div>
+  <div class="dragHint" id="dragHint"><i class="ph-fill ph-arrows-clockwise"></i> Drag to spin</div>
   <div id="padBadge" aria-live="polite"></div>
   <a class="helpBtn ghBtn" href="https://github.com/amosjerbi/sunfield" target="_blank" rel="noopener" aria-label="View on GitHub"><i class="ph-fill ph-github-logo"></i></a>
   <button class="helpBtn" id="howOpen" aria-label="How to play" aria-haspopup="dialog">?</button>
@@ -218,11 +218,11 @@
     <b class="h">How to play</b>
     <p>Pick up loads around the valley and deliver them. Take the bumps gently or your cargo ends up on the road.</p>
     <p><kbd>W A S D</kbd> / arrows drive · <kbd>Space</kbd> handbrake · <kbd>Shift</kbd> fire boost · <kbd>H</kbd> horn · <kbd>C</kbd> camera · <kbd>T</kbd> time of day · <kbd>R</kbd> back to road · <kbd>Esc</kbd> show / hide your errand</p>
-    <p>🧍 Villagers wait at the stops with a little sign saying where they're going. Roll up slowly and they hop in the back (two at a time), then stop at their place to drop them off and get paid. Big bumps bounce them out, and they don't like being bowled over!</p>
-    <p>🚨 Everyone else just out for a walk gets scooped into the back if you drive into them, and each one is a wanted star (up to ★★★★★). Police cars that touch you rescue a rider. Drive into the lake with riders aboard and the police give up, your riders swim for the shore, and your boost fills right up (no riders? dive fully under to lose them).</p>
-    <p>🎮 Controller: <kbd>Left stick</kbd> steer · <kbd>RT</kbd>/<kbd>A</kbd> gas · <kbd>LT</kbd>/<kbd>B</kbd> brake · <kbd>X</kbd> handbrake · <kbd>RB</kbd> boost · <kbd>Y</kbd> horn · <kbd>D-pad ↑</kbd> camera · <kbd>D-pad ↓</kbd> back to road · <kbd>Select</kbd> time of day · <kbd>Start</kbd> pause</p>
+    <p><i class="ph-fill ph-person-simple"></i> Villagers wait at the stops with a little sign saying where they're going. Roll up slowly and they hop in the back (two at a time), then follow the compass (it turns their colour) to their place: drop them off to get paid and fill every gas tank. Big bumps bounce them out, and they don't like being bowled over!</p>
+    <p><i class="ph-fill ph-siren"></i> Everyone else just out for a walk gets scooped into the back if you drive into them, and each one is a wanted star (up to five). Police cars that touch you rescue a rider. Drive into the lake with riders aboard and the police give up, your riders swim for the shore, and your boost fills right up (no riders? dive fully under to lose them).</p>
+    <p><i class="ph-fill ph-game-controller"></i> Controller: <kbd>Left stick</kbd> steer · <kbd>RT</kbd>/<kbd>A</kbd> gas · <kbd>LT</kbd>/<kbd>B</kbd> brake · <kbd>X</kbd> handbrake · <kbd>RB</kbd> boost · <kbd>Y</kbd> horn · <kbd>D-pad <i class="ph-fill ph-arrow-up"></i></kbd> camera · <kbd>D-pad <i class="ph-fill ph-arrow-down"></i></kbd> back to road · <kbd>Select</kbd> time of day · <kbd>Start</kbd> pause</p>
     <div class="boostInfo">
-      <b>🔥 How to fill the boost</b>
+      <b><i class="ph-fill ph-fire"></i> How to fill the boost</b>
       <ul>
         <li>Bump into trees to knock oranges down. <b>5 oranges = 1 segment</b></li>
         <li>Every completed errand fills <b>1 segment</b></li>
@@ -231,7 +231,7 @@
       </ul>
     </div>
   </aside>
-  <div id="levels" role="radiogroup" aria-label="Level"><button data-lv="1" role="radio">🌾 Valley</button><button data-lv="2" role="radio">🏘️ Town</button></div>
+  <div id="levels" role="radiogroup" aria-label="Level"><button data-lv="1" role="radio"><i class="ph-fill ph-plant"></i> Valley</button><button data-lv="2" role="radio"><i class="ph-fill ph-house-line"></i> Town</button></div>
   <div class="actions">
     <button id="go">Start the engine</button>
   </div>
@@ -303,14 +303,14 @@ const DAY_LEN=300;          // seconds for a full cycle
 let tod=.06;                // 0..1, starts in the morning
 const C=c=>new THREE.Color(c);
 const TOD_KEYS=[ // t, label, sky top/mid/bot, fog, light col, light int, hemi sky, hemi ground, hemi int, light dir, night amount, cloud
-  {t:0,   n:'🌄 Morning',top:C('#5d8fb8'),mid:C('#e8b8a8'),bot:C('#f2d0b8'),fog:C('#e2c6b8'),lc:C('#ffc8a0'),li:1.15,hs:C('#d8c8d0'),hg:C('#5e5058'),hi:.68,dir:new THREE.Vector3(-130,35,-40),night:.05,cl:C('#f8dcc8')},
-  {t:.10, n:'☀️ Day',    top:C('#3b9bb0'),mid:C('#9fd0cf'),bot:C('#c9dccf'),fog:C('#c9dccf'),lc:C('#fff0d4'),li:1.75,hs:C('#d5ecf0'),hg:C('#6e5b52'),hi:.85,dir:new THREE.Vector3(-55,115,-45),night:0,cl:C('#fbf5e8')},
-  {t:.42, n:'☀️ Day',    top:C('#3b9bb0'),mid:C('#9fd0cf'),bot:C('#c9dccf'),fog:C('#c9dccf'),lc:C('#fff0d4'),li:1.75,hs:C('#d5ecf0'),hg:C('#6e5b52'),hi:.85,dir:new THREE.Vector3(70,110,-45),night:0,cl:C('#fbf5e8')},
-  {t:.53, n:'🌇 Evening',top:C('#4a6fa0'),mid:C('#f0b27a'),bot:C('#f6c78f'),fog:C('#e9b98a'),lc:C('#ffaa66'),li:1.5,hs:C('#f0c9a8'),hg:C('#6a4a48'),hi:.72,dir:new THREE.Vector3(130,45,-30),night:.1,cl:C('#ffd0a0')},
-  {t:.61, n:'🌆 Dusk',   top:C('#2c3a6e'),mid:C('#b0708a'),bot:C('#d8907a'),fog:C('#8e6f86'),lc:C('#ff8a6a'),li:.65,hs:C('#8a7aa0'),hg:C('#3a3048'),hi:.58,dir:new THREE.Vector3(150,18,-20),night:.55,cl:C('#c08898')},
-  {t:.69, n:'🌙 Night',  top:C('#0b1430'),mid:C('#1d2e55'),bot:C('#2a3a5e'),fog:C('#1f2c4a'),lc:C('#a8bfff'),li:.6,hs:C('#5a6fa8'),hg:C('#1e1e30'),hi:.5,dir:new THREE.Vector3(-40,120,60),night:1,cl:C('#3a4668')},
-  {t:.90, n:'🌙 Night',  top:C('#0b1430'),mid:C('#1d2e55'),bot:C('#2a3a5e'),fog:C('#1f2c4a'),lc:C('#a8bfff'),li:.6,hs:C('#5a6fa8'),hg:C('#1e1e30'),hi:.5,dir:new THREE.Vector3(40,120,60),night:1,cl:C('#3a4668')},
-  {t:.96, n:'🌄 Dawn',   top:C('#34497a'),mid:C('#c08a98'),bot:C('#e0a890'),fog:C('#a88a94'),lc:C('#ff9a7a'),li:.6,hs:C('#a090b0'),hg:C('#40384a'),hi:.55,dir:new THREE.Vector3(-150,15,-40),night:.5,cl:C('#d0a0a8')},
+  {t:0,   n:'Morning',top:C('#5d8fb8'),mid:C('#e8b8a8'),bot:C('#f2d0b8'),fog:C('#e2c6b8'),lc:C('#ffc8a0'),li:1.15,hs:C('#d8c8d0'),hg:C('#5e5058'),hi:.68,dir:new THREE.Vector3(-130,35,-40),night:.05,cl:C('#f8dcc8')},
+  {t:.10, n:'Day',    top:C('#3b9bb0'),mid:C('#9fd0cf'),bot:C('#c9dccf'),fog:C('#c9dccf'),lc:C('#fff0d4'),li:1.75,hs:C('#d5ecf0'),hg:C('#6e5b52'),hi:.85,dir:new THREE.Vector3(-55,115,-45),night:0,cl:C('#fbf5e8')},
+  {t:.42, n:'Day',    top:C('#3b9bb0'),mid:C('#9fd0cf'),bot:C('#c9dccf'),fog:C('#c9dccf'),lc:C('#fff0d4'),li:1.75,hs:C('#d5ecf0'),hg:C('#6e5b52'),hi:.85,dir:new THREE.Vector3(70,110,-45),night:0,cl:C('#fbf5e8')},
+  {t:.53, n:'Evening',top:C('#4a6fa0'),mid:C('#f0b27a'),bot:C('#f6c78f'),fog:C('#e9b98a'),lc:C('#ffaa66'),li:1.5,hs:C('#f0c9a8'),hg:C('#6a4a48'),hi:.72,dir:new THREE.Vector3(130,45,-30),night:.1,cl:C('#ffd0a0')},
+  {t:.61, n:'Dusk',   top:C('#2c3a6e'),mid:C('#b0708a'),bot:C('#d8907a'),fog:C('#8e6f86'),lc:C('#ff8a6a'),li:.65,hs:C('#8a7aa0'),hg:C('#3a3048'),hi:.58,dir:new THREE.Vector3(150,18,-20),night:.55,cl:C('#c08898')},
+  {t:.69, n:'Night',  top:C('#0b1430'),mid:C('#1d2e55'),bot:C('#2a3a5e'),fog:C('#1f2c4a'),lc:C('#a8bfff'),li:.6,hs:C('#5a6fa8'),hg:C('#1e1e30'),hi:.5,dir:new THREE.Vector3(-40,120,60),night:1,cl:C('#3a4668')},
+  {t:.90, n:'Night',  top:C('#0b1430'),mid:C('#1d2e55'),bot:C('#2a3a5e'),fog:C('#1f2c4a'),lc:C('#a8bfff'),li:.6,hs:C('#5a6fa8'),hg:C('#1e1e30'),hi:.5,dir:new THREE.Vector3(40,120,60),night:1,cl:C('#3a4668')},
+  {t:.96, n:'Dawn',   top:C('#34497a'),mid:C('#c08a98'),bot:C('#e0a890'),fog:C('#a88a94'),lc:C('#ff9a7a'),li:.6,hs:C('#a090b0'),hg:C('#40384a'),hi:.55,dir:new THREE.Vector3(-150,15,-40),night:.5,cl:C('#d0a0a8')},
 ];
 const ENV={top:C('#000'),mid:C('#000'),bot:C('#000'),fog:C('#000'),lc:C('#000'),hs:C('#000'),hg:C('#000'),cl:C('#000'),li:1,hi:1,night:0,dir:new THREE.Vector3(),n:''};
 function sampleTod(t){
@@ -1808,7 +1808,7 @@ function updateSheepRiders(dt,jolt){
     const seat=riders.length;s.hop={t:0,from:s.g.position.clone(),seat,r0:s.g.rotation.y};s.o.r=-9;riders.push(s);baa(.9+Math.random()*.3);
     if(riders.length===SHEEP_MAX){ // a full flock fills every boost tank
       const wasSmall=boostMax()<3;bigTank=true;boost=boostMax();scatterAt=elapsed+1.6;
-      toast('🐑🐑🐑 Full flock! 🔥🔥🔥','All three boost tanks are full. Hold '+(('ontouchstart' in window)?'🔥':'Shift')+' to blast off!',2.8);
+      toast('Full flock!','All three boost tanks are full. Hold '+(('ontouchstart' in window)?'the boost button':'Shift')+' to blast off!',2.8);
       if(wasSmall){const bb=$('boostBar');bb.classList.add('unlocked');setTimeout(()=>bb.classList.remove('unlocked'),1600);}
     }break;}
   for(const s of riders){
@@ -1940,7 +1940,7 @@ const touch={f:0};
 // D-pad up camera · D-pad down back to road · Select/View time of day · Start/Menu pause
 const pad={on:false,steer:0,gas:0,brake:0,hb:false,boost:false,prev:[],rep:0,hats:{}};
 function padRumble(strong,weak,ms){try{const g=navigator.getGamepads&&[...navigator.getGamepads()].find(g=>g&&g.connected);g&&g.vibrationActuator&&g.vibrationActuator.playEffect('dual-rumble',{duration:ms,strongMagnitude:strong,weakMagnitude:weak});}catch(e){}}
-addEventListener('gamepadconnected',e=>{pad.on=true;if(typeof toast==='function'&&running)toast('🎮 Controller connected',e.gamepad.id.replace(/\s*\(.*$/,'').slice(0,40),2);});
+addEventListener('gamepadconnected',e=>{pad.on=true;if(typeof toast==='function'&&running)toast('Controller connected',e.gamepad.id.replace(/\s*\(.*$/,'').slice(0,40),2);});
 addEventListener('gamepaddisconnected',()=>{const any=[...navigator.getGamepads()].some(g=>g&&g.connected);if(!any){pad.on=false;pad.steer=pad.gas=pad.brake=0;pad.hb=pad.boost=false;}});
 // Read one pad into standard-layout arrays. Non-standard pads (e.g. an 8BitDo in Switch mode, which shows up as a
 // Nintendo "Pro Controller") use the same face/shoulder/trigger order (B A Y X, L R, ZL ZR, - +, L3 R3) but report the
@@ -1963,7 +1963,7 @@ function pollPad(){
   if(!list.length){pad.on=false;pad.steer=pad.gas=pad.brake=0;pad.hb=pad.boost=false;if(badge)badge.classList.remove('on');pad.badgeId=null;return;}
   pad.on=true;
   const act=list.reduce((a,g)=>(g.timestamp||0)>(a.timestamp||0)?g:a,list[0]);
-  if(badge&&pad.badgeId!==act.id){pad.badgeId=act.id;badge.textContent='🎮 '+act.id.replace(/\s*\(.*$/,'').replace(/^[0-9a-f]{4}-[0-9a-f]{4}-/i,'').slice(0,32)+' ready';badge.classList.add('on');}
+  if(badge&&pad.badgeId!==act.id){pad.badgeId=act.id;badge.textContent=' '+act.id.replace(/\s*\(.*$/,'').replace(/^[0-9a-f]{4}-[0-9a-f]{4}-/i,'').slice(0,32)+' ready';badge.insertAdjacentHTML('afterbegin','<i class="ph-fill ph-game-controller"></i>');badge.classList.add('on');}
   const val=new Array(17).fill(0),axv=[0,0];for(const g of list)readPad(g,val,axv);   // every connected pad counts
   const bv=i=>val[i], now=val.map(v=>v>.35);
   const ax=axv[0],dz=.15,sx=Math.abs(ax)<dz?0:(ax-Math.sign(ax)*dz)/(1-dz);
@@ -2053,8 +2053,8 @@ function newJob(){
 }
 function refreshJob(){
   if(!job)return;const c=job.cargo;
-  if(job.phase==='pickup'){$('jobLbl').textContent=job.beach?'🏖️ Beach run · Pick up':'Pick up';$('jobTxt').textContent=`${c.name} at ${locs[job.from].name}`;$('jobSub').textContent=(locs[job.from].offroad?'Off-road: no road goes there! ':'')+`Then deliver to ${locs[job.to].name}`+(locs[job.to].offroad?' (off-road)':'');$('items').innerHTML='';}
-  else{$('jobLbl').textContent=job.beach?'🏖️ Beach run · Deliver':'Deliver';$('jobTxt').textContent=`${c.name} to ${locs[job.to].name}`;$('jobSub').textContent=locs[job.to].beach?'Soft sand ahead: it gets slippery!':locs[job.to].offroad?'Off-road: cut across the fields, gently!':'Take it gently over the bumps';
+  if(job.phase==='pickup'){$('jobLbl').innerHTML=job.beach?'<i class="ph-fill ph-umbrella-simple"></i> Beach run · Pick up':'Pick up';$('jobTxt').textContent=`${c.name} at ${locs[job.from].name}`;$('jobSub').textContent=(locs[job.from].offroad?'Off-road: no road goes there! ':'')+`Then deliver to ${locs[job.to].name}`+(locs[job.to].offroad?' (off-road)':'');$('items').innerHTML='';}
+  else{$('jobLbl').innerHTML=job.beach?'<i class="ph-fill ph-umbrella-simple"></i> Beach run · Deliver':'Deliver';$('jobTxt').textContent=`${c.name} to ${locs[job.to].name}`;$('jobSub').textContent=locs[job.to].beach?'Soft sand ahead: it gets slippery!':locs[job.to].offroad?'Off-road: cut across the fields, gently!':'Take it gently over the bumps';
     $('items').innerHTML=loose.map(it=>`<i class="${it.lost?'lost':''}" style="background:${c.color}"></i>`).join('');}
 }
 function loseItem(){
@@ -2081,8 +2081,8 @@ function checkJob(dt){
       const capBefore=boostMax();coins+=pay;dels++;lvErrandDone();
       if(dels%ERRANDS_PER_TANK===0&&boostMax()>capBefore){syncSegs();boost=Math.min(boostMax(),boost+1);setTimeout(()=>{popTanks();bunkerSnd('mega');},600);}   // every 3 errands: one more tank
       boost=Math.min(boostMax(),boost+1);$('coins').textContent=coins;$('dels').textContent=dels;
-      if(dels===1)setTimeout(()=>{toast('🔥 Boost tank upgraded!','It now holds 3 segments. Each errand fills one, and oranges top it up.',3.2);const bb=$('boostBar');bb.classList.add('unlocked');setTimeout(()=>bb.classList.remove('unlocked'),1600);},2700);
-      toast(`Delivered! +${pay} ◎ · +1 🔥`,(frac===1?'Not a single one dropped. Bravo!':`${left}/${job.cargo.items} made it`)+' One boost segment filled.',2.6);
+      if(dels===1)setTimeout(()=>{toast('Boost tank upgraded!','It now holds 3 segments. Each errand fills one, and oranges top it up.',3.2);const bb=$('boostBar');bb.classList.add('unlocked');setTimeout(()=>bb.classList.remove('unlocked'),1600);},2700);
+      toast(`Delivered! +${pay} coins · +1 boost`,(frac===1?'Not a single one dropped. Bravo!':`${left}/${job.cargo.items} made it`)+' One boost segment filled.',2.6);
       clearCargo();lastLoc=job.to;job=null;$('jobLbl').textContent='Nice work';$('jobTxt').textContent='Finding your next errand…';$('jobSub').textContent='';$('items').innerHTML='';
       setTimeout(newJob,1800);
     }
@@ -2381,7 +2381,7 @@ function updateDayCycle(dt){
   const fx=Math.sin(car.h),fz=Math.cos(car.h);
   headL.intensity=on*90;headL.position.set(car.x+fx*1.9,car.y+1.1,car.z+fz*1.9);headL.target.position.set(car.x+fx*22,car.y-1.5,car.z+fz*22);
   { const hr=(6+tod*24)%24,h=Math.floor(hr),m=Math.floor((hr-h)*60/5)*5;  // 0 = 6:00 am, shown in 5-minute steps
-    const ic={Morning:'sun-horizon',Day:'sun',Evening:'sun-horizon',Dusk:'cloud-moon',Night:'moon-stars',Dawn:'sun-horizon'}[ENV.n.split(' ')[1]]||'sun';
+    const ic={Morning:'sun-horizon',Day:'sun',Evening:'sun-horizon',Dusk:'cloud-moon',Night:'moon-stars',Dawn:'sun-horizon'}[ENV.n]||'sun';
     const txt=`<i class="ph-fill ph-${ic}"></i> ${h}:${m<10?'0':''}${m}${todFrozen?' <i class="ph-fill ph-lock-simple" title="Time frozen"></i>':''}`;if(todHTML!==txt){todHTML=txt;$('tod').innerHTML=txt;} }
   if(ENV.n!==lastTodLabel)lastTodLabel=ENV.n;
 }
@@ -2445,6 +2445,7 @@ function paxLaunch(P, vx, vy, vz, flip) {   // thrown: out of the bed, or bumped
 }
 function updatePassengers(dt) {
   const sp = Math.hypot(car.vx, car.vz), jolt = paxJolt; paxJolt = 0;
+  rideFeelUpdate(dt, jolt);
   const live = running && !paused;
   for (const P of pax) {
     const c = P.c, g = c.group;
@@ -2477,7 +2478,7 @@ function updatePassengers(dt) {
     } else if (P.state === 'ride') {
       P.rideT += dt; g.position.copy(paxSeat(P.seat, P)); g.position.y = Math.abs(Math.sin(P.rideT * (3 + sp * .4))) * Math.min(.06, sp * .003);
       if (c.state !== 'sit') c.setState('sit');
-      villagerTick(c, dt, false, Math.PI);
+      villagerTick(c, dt, false, Math.PI); riderHead(c, dt, Math.PI);
       const L = locs[P.dest];
       if (live && Math.hypot(car.x - L.x, car.z - L.z) < 8 && sp < 4 && !car.air) {   // here! hop out on the stop's side
         const w = g.getWorldPosition(new THREE.Vector3()); scene.add(g); g.position.copy(w);
@@ -2486,8 +2487,8 @@ function updatePassengers(dt) {
         P.state = 'hopout'; P.t = 0; c.setState('idle'); c.triggerAction('jump'); P.beam.visible = false;
         paxRiding.splice(paxRiding.indexOf(P), 1);
         const dist = Math.hypot(L.x - locs[P.home].x, L.z - locs[P.home].z), pay = Math.round(12 + dist / 10);
-        coins += pay; $('coins').textContent = coins; boost = Math.min(boostMax(), boost + 1);
-        paxSay(P, `Thanks! +${pay} ◎`, 3.2); c.setExpressionMode('happy');
+        coins += pay; $('coins').textContent = coins; boost = boostMax(); popTanks(); bunkerSnd('mega');   // mission done: every tank full
+        paxSay(P, `Thanks! +${pay} coins · full tanks!`, 3.2); c.setExpressionMode('happy');
       }
     } else if (P.state === 'hopout') {
       P.t = Math.min(1, P.t + dt / .6); const t = P.t;
@@ -2529,6 +2530,12 @@ function updatePassengers(dt) {
       return `<div><i style="background:${P.c.dress}"></i>${P.c.vname} → ${L.name} · ${Math.round(Math.hypot(car.x - L.x, car.z - L.z))} m</div>`; }).join(''); }
 }
 const angDiff = (a, b) => Math.atan2(Math.sin(a - b), Math.cos(a - b));
+const arrPath = document.querySelector('#arrSvg path');
+function paxCompassTarget() {   // the riding passenger whose stop is nearest
+  let best = null, bd = 1e9;
+  for (const P of paxRiding) { if (P.state !== 'ride') continue; const L = locs[P.dest], d = Math.hypot(L.x - car.x, L.z - car.z); if (d < bd) { bd = d; best = P; } }
+  return best;
+}
 
 // =====================================================================================
 // WALKERS: villagers strolling up and down the road verge between the farms. They don't want
@@ -2611,9 +2618,9 @@ function copBanner(html,show){if(!police.banner){const d=document.createElement(
 function poof(x,y,z){for(let k=0;k<14;k++)puff(x+R(-.6,.6),y+R(.2,1.6),z+R(-.6,.6),1.6,R(-3,3),R(-3,3),'#f4efe2');}   // silent: just the puff
 function addStar(msg){police.wanted=Math.min(5,police.wanted+1);syncStars();
   const want=Math.min(6,1+police.wanted);while(cops.filter(c=>!c.leaving).length<want)spawnCop();
-  copBanner(`<div style="font-size:42px;font-weight:700">🚨 ${'★'.repeat(police.wanted)}<span style="opacity:.35">${'★'.repeat(5-police.wanted)}</span></div><div style="font-size:18px">${msg}</div>`,true);
+  copBanner(`<div style="font-size:42px;font-weight:700"><i class="ph-fill ph-siren"></i> ${'<i class="ph-fill ph-star"></i>'.repeat(police.wanted)}<span style="opacity:.35">${'<i class="ph-fill ph-star"></i>'.repeat(5-police.wanted)}</span></div><div style="font-size:18px">${msg}</div>`,true);
   clearTimeout(police.bt);police.bt=setTimeout(()=>copBanner(null,false),3200);}
-function syncStars(){const el=$('wanted');if(!el)return;el.innerHTML=`<b>${'★'.repeat(police.wanted)}</b>${'★'.repeat(5-police.wanted)}`;el.classList.toggle('hot',police.wanted>0);el.classList.remove('pop');void el.offsetWidth;el.classList.add('pop');}
+function syncStars(){const el=$('wanted');if(!el)return;el.innerHTML=`<b>${'<i class="ph-fill ph-star"></i>'.repeat(police.wanted)}</b>${'<i class="ph-fill ph-star"></i>'.repeat(5-police.wanted)}`;el.classList.toggle('hot',police.wanted>0);el.classList.remove('pop');void el.offsetWidth;el.classList.add('pop');}
 function spawnCop(){
   // come in from a street corner or a stretch of road 60-110 m away
   const cand=[];for(let i=0;i<ROAD_N;i+=40)cand.push([roadX[i],roadZ[i]]);
@@ -2667,7 +2674,7 @@ function updateCops(dt){
   for(let i=cops.length-1;i>=0;i--){const c=cops[i];if(c.leaving&&Math.hypot(car.x-c.x,car.z-c.z)>140){scene.remove(c.g);cops.splice(i,1);}}
   // the only way to shake them: go fully under the water
   if(police.wanted&&car.y<LAKE_Y-1.6){police.wanted=0;syncStars();for(const c of cops)c.leaving=true;
-    copBanner('<div style="font-size:30px;font-weight:700">🫧 You lost them</div>',true);clearTimeout(police.bt);police.bt=setTimeout(()=>copBanner(null,false),2200);}
+    copBanner('<div style="font-size:30px;font-weight:700"><i class="ph-fill ph-drop"></i> You lost them</div>',true);clearTimeout(police.bt);police.bt=setTimeout(()=>copBanner(null,false),2200);}
 }
 
 
@@ -2676,6 +2683,28 @@ function updateCops(dt){
 // into the back of the truck, and every one in the bed is another wanted star (5 at most).
 // Lose the police (dive under the lake) and once you're back on dry land they hop out and run off.
 // =====================================================================================
+// riders' heads: a little spring on the neck that lags behind the truck's turns, braking and bumps
+const RF = { ax: 0, az: 0, vy: 0, ay: 0, px: 0, pz: 0, py: 0, kick: 0, init: false };
+function rideFeelUpdate(dt, jolt) {
+  const d = Math.max(dt, 1e-3);
+  if (!RF.init || Math.hypot(car.x - RF.px, car.z - RF.pz) > 30) { RF.pvx = car.vx; RF.pvz = car.vz; RF.py = car.y; RF.vy = 0; RF.init = true; }   // first frame or a teleport
+  const k = Math.min(1, dt * 12);
+  RF.ax += (clamp((car.vx - RF.pvx) / d, -30, 30) - RF.ax) * k; RF.az += (clamp((car.vz - RF.pvz) / d, -30, 30) - RF.az) * k;
+  const vy = clamp((car.y - RF.py) / d, -12, 12); RF.ay = clamp((vy - RF.vy) / d, -200, 200); RF.vy = vy;
+  RF.pvx = car.vx; RF.pvz = car.vz; RF.px = car.x; RF.pz = car.z; RF.py = car.y; RF.kick = jolt;
+}
+function riderHead(c, dt, facing) {   // facing: the rider's yaw relative to the truck
+  const n = c.joints && c.joints.neck; if (!n || !c.group.visible) return;
+  const s = c._rf || (c._rf = { rx: 0, rz: 0, vx: 0, vz: 0, k: 60 + Math.random() * 45, g: .8 + Math.random() * .45 });   // everyone's neck is a bit different
+  const h = car.h + facing, fx = Math.sin(h), fz = Math.cos(h);
+  const aF = RF.ax * fx + RF.az * fz, aL = RF.ax * fz - RF.az * fx;   // acceleration along the rider's forward and local +x
+  const tx = clamp(-aF * .035 * s.g, -.45, .45), tz = clamp(aL * .04 * s.g, -.55, .55);   // inertia: the head is left behind
+  s.vx += (-(s.rx - tx) * s.k - s.vx * 6) * dt - RF.ay * .006 * dt;   // the road dropping or rising under the truck
+  s.vz += (-(s.rz - tz) * s.k - s.vz * 6) * dt;
+  if (RF.kick > 1.2) { s.vx += (Math.random() - .25) * Math.min(RF.kick, 12) * .55; s.vz += (Math.random() - .5) * Math.min(RF.kick, 12) * .45; }
+  s.rx = clamp(s.rx + s.vx * dt, -.6, .6); s.rz = clamp(s.rz + s.vz * dt, -.6, .6);
+  n.rotation.x += s.rx; n.rotation.z += s.rz;
+}
 const GRAB_MAX = 5, grabbed = [], grabLoose = [];
 let grabRescueT = 0;   // so one long scrape with a cop car doesn't empty the whole bed at once   // grabbed: in the bed; grabLoose: hopping out, thrown, running off
 function grabSeat(k) {   // facing out the back like the passengers: three across behind the cab, then two a row back
@@ -2714,7 +2743,7 @@ function updateGrabbed(dt) {
     } else {
       G.rideT += dt; g.position.copy(grabSeat(G.seat)); g.position.y = Math.abs(Math.sin(G.rideT * (3 + sp * .4) + G.seat)) * Math.min(.07, sp * .004);
       if (c.state !== 'sit') c.setState('sit');
-      villagerTick(c, dt, false, grabFace(G.seat));
+      villagerTick(c, dt, false, grabFace(G.seat)); riderHead(c, dt, grabFace(G.seat));
     }
   }
   // a big bump throws one of them out the back
@@ -2729,7 +2758,7 @@ function updateGrabbed(dt) {
       const G = [...grabbed].reverse().find(q => q.state === 'ride') || grabbed[grabbed.length - 1], w = grabOff(G);
       grabLoose.splice(grabLoose.indexOf(G), 1); poof(w.x, w.y, w.z); G.g.visible = false; G.c.setExpressionMode(G.c.mood);
       G.p.grab = false; G.p.goneT = 0; G.p.ox = G.p.oz = 0; if (G.p.type) G.p.state = 'walk'; padRumble(.4, .6, 140);
-      copBanner(`<div style="font-size:30px;font-weight:700">👮 ${G.c.vname} rescued!</div>`, true); clearTimeout(police.bt); police.bt = setTimeout(() => copBanner(null, false), 1800); }
+      copBanner(`<div style="font-size:30px;font-weight:700"><i class="ph-fill ph-police-car"></i> ${G.c.vname} rescued!</div>`, true); clearTimeout(police.bt); police.bt = setTimeout(() => copBanner(null, false), 1800); }
   }
   // splash into the lake with anyone in the back: the cops give up, the riders jump out and run for the shore, and the boost fills right up
   if (grabbed.length && running && !car.air && car.y < LAKE_Y - .05) {
@@ -2737,7 +2766,7 @@ function updateGrabbed(dt) {
     boost = boostMax(); popTanks(); bunkerSnd('mega'); padRumble(.6, .8, 260);
     for (let k = 0; k < 18; k++) puff(car.x + R(-2, 2), LAKE_Y + .2, car.z + R(-2, 2), 1.8, R(-4, 4), R(-4, 4), '#d8f0f2');
     for (const G of [...grabbed]) grabHopOut(G, true);
-    copBanner(`<div style="font-size:34px;font-weight:700">🫧 You lost them!</div><div style="font-size:18px">⛽ Full boost, and your riders swim for it</div>`, true); clearTimeout(police.bt); police.bt = setTimeout(() => copBanner(null, false), 2600);
+    copBanner(`<div style="font-size:34px;font-weight:700"><i class="ph-fill ph-drop"></i> You lost them!</div><div style="font-size:18px"><i class="ph-fill ph-gas-pump"></i> Full boost, and your riders swim for it</div>`, true); clearTimeout(police.bt); police.bt = setTimeout(() => copBanner(null, false), 2600);
   }
   // police gone and back on dry land: everybody out
   if (!police.wanted && grabbed.length && !car.air && sp < 5 && car.y > LAKE_Y + .3) for (const G of [...grabbed]) if (G.state === 'ride') grabHopOut(G);
@@ -2791,7 +2820,9 @@ function frame(){
     const sp=Math.hypot(car.vx,car.vz);$('spd').textContent=Math.round(sp*3.6);const bm=boostMax();syncSegs();segEls.forEach((el,k)=>{const f=clamp(boost-k,0,1);el.firstChild.style.width=(f*100)+'%';el.classList.toggle('locked',k>=bm);el.classList.toggle('full',f>=1);});$('speed').classList.toggle('boosting',!!car.boosting);
     if(isTouch){const tf=$('tF');$('touch').classList.toggle('on',running);tf.firstChild.style.height=clamp(boost/bm,0,1)*100+'%';tf.classList.toggle('empty',boost<=.005);tf.classList.toggle('ready',boost>=1&&!car.boosting);tf.classList.toggle('boosting',!!car.boosting);}
     const m=Math.floor(playTime/60),s=Math.floor(playTime%60);$('timer').textContent=`${m}:${s<10?'0':''}${s}`;
-    if(job){const L=locs[job.phase==='pickup'?job.from:job.to];camera.getWorldDirection(camDir);const cy=Math.atan2(camDir.x,camDir.z),ty=Math.atan2(L.x-car.x,L.z-car.z);
+    const rider=paxCompassTarget();   // a passenger in the back with somewhere to go beats the errand
+    { const col=rider?rider.c.dress:'#e0703f';if(arrPath.dataset.col!==col){arrPath.setAttribute('fill',col);arrPath.dataset.col=col;} }
+    if(rider||job){const L=rider?locs[rider.dest]:locs[job.phase==='pickup'?job.from:job.to];camera.getWorldDirection(camDir);const cy=Math.atan2(camDir.x,camDir.z),ty=Math.atan2(L.x-car.x,L.z-car.z);
       $('arrSvg').style.transform=`rotate(${-(ty-cy)*180/Math.PI}deg)`;$('dist').textContent=Math.round(Math.hypot(L.x-car.x,L.z-car.z))+' m';$('compass').style.opacity=1;}else $('compass').style.opacity=.3;
   }
   updateFish(dt,performance.now()/1000);
@@ -2842,7 +2873,7 @@ const lvDone=()=>{let n=0;try{n=+localStorage.getItem('sunfield-valley-errands')
 const townOpen=()=>LEVEL===2||lvDone()>=TOWN_NEED;
 let lvSel=LEVEL;
 function syncLevels(){const b2=document.querySelector('#levels [data-lv="2"]'),open=townOpen();
-  b2.classList.toggle('locked',!open);b2.innerHTML=open?'🏘️ Town':`🔒 Town <small>${Math.min(lvDone(),TOWN_NEED)}/${TOWN_NEED}</small>`;
+  b2.classList.toggle('locked',!open);b2.innerHTML=open?'<i class="ph-fill ph-house-line"></i> Town':`<i class="ph-fill ph-lock-simple"></i> Town <small>${Math.min(lvDone(),TOWN_NEED)}/${TOWN_NEED}</small>`;
   b2.title=open?'':`Finish ${TOWN_NEED} errands in the valley to open the Town`;
   for(const b of document.querySelectorAll('#levels button')){b.classList.toggle('on',+b.dataset.lv===lvSel);b.setAttribute('aria-checked',+b.dataset.lv===lvSel);}
   $('go').textContent=lvSel===LEVEL?'Start the engine':lvSel===2?'Drive to the Town':'Drive to the Valley';
@@ -2851,7 +2882,7 @@ function pickLevel(lv){if(lv===2&&!townOpen()){const b=document.querySelector('#
 document.querySelectorAll('#levels button').forEach(b=>b.addEventListener('click',()=>pickLevel(+b.dataset.lv)));
 $('lvBtn').addEventListener('click',()=>{location.href=LEVEL_URL[LEVEL===1?2:1];});
 function lvErrandDone(){if(LEVEL!==1)return;const n=lvDone()+1;try{localStorage.setItem('sunfield-valley-errands',n);}catch(e){}
-  if(n===TOWN_NEED)setTimeout(()=>{const d=$('lvBanner');d.innerHTML='<b>🏘️ The Town is open!</b><span>Head there from the start screen, or Pause → Go to the Town</span>';d.style.opacity=1;setTimeout(()=>d.style.opacity=0,4500);},2800);
+  if(n===TOWN_NEED)setTimeout(()=>{const d=$('lvBanner');d.innerHTML='<b><i class="ph-fill ph-house-line"></i> The Town is open!</b><span>Head there from the start screen, or Pause → Go to the Town</span>';d.style.opacity=1;setTimeout(()=>d.style.opacity=0,4500);},2800);
   syncLevels();}
 syncLevels();
 

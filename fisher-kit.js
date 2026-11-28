@@ -2442,7 +2442,6 @@ window.defineFisherKit = function (THREE) {
     // ---------------------------------------------------------------------------------
     const V_NAMES = ['Mia','Ollie','Rosa','Theo','Lena','Kai','Nina','Pip','Ada','Luca','Ines','Sami','Juno','Remy','Vera','Tess','Milo','Zoe','Ivo','Lulu','Nico','Dora','Elio','Wren'];
     const V_ADULT_NAMES = ['Marta','Giorgio','Elena','Paolo','Anna','Franco','Lucia','Sandro','Rita','Bruno','Carla','Enzo','Gina','Aldo','Nadia','Piero','Teresa','Vito','Silvia','Ugo','Olga','Dario','Irene','Marco'];
-    const V_BEARD_NAMES = ['Giorgio','Paolo','Franco','Sandro','Bruno','Enzo','Aldo','Piero','Vito','Ugo','Dario','Marco'];
     const V_SKINS = ['#ffad84','#f1c9a5','#e8b896','#d9a27a','#c48a62'];
     const V_HAIR = ['#ff4f62','#2b2420','#4a3426','#6b4a2e','#c9a35a','#e8c872','#b8452e','#9a958a','#f2efe6','#3d5a9e','#6fb7a8','#a77bd6','#ff8fb1','#1f1b1e'];
     const V_ADULT_HAIR = ['#2b2420','#4a3426','#6b4a2e','#c9a35a','#b8452e','#9a958a','#d9d4c8','#f2efe6','#1f1b1e','#7a5a3a'];
@@ -2450,8 +2449,8 @@ window.defineFisherKit = function (THREE) {
     const V_SHIRTS = ['#f4efe2','#e9e2cf','#c8453a','#2f7489','#7d9a43','#f1c453','#d85a7f','#5fb3c0','#ef8a5a','#ffffff','#a6c8e8','#e8d0a6'];
     const V_PANTS = ['#3a5a8a','#2b3550','#4a3a2e','#6b5a3e','#5a6b4a','#3a3d52','#7a6a55','#2b2420','#8a5a3a'];
     const V_EYES = ['#1E1B24','#3a2516','#24435c','#2f5233','#4b2f5c','#5a3a1e'];
-    const V_STYLES = ['buns','bun','ponytail','twintails','bob','long','flowing','pixie','afro','bald'];
-    const V_ADULT_STYLES = ['pixie','pixie','bob','long','ponytail','bun','afro','bald','flowing'];
+    const V_STYLES = ['buns','bun','ponytail','twintails','bob','long','flowing','pixie','afro'];   // villagers always have hair
+    const V_ADULT_STYLES = ['pixie','pixie','bob','long','ponytail','bun','afro','flowing'];
     const V_MOODS = ['smile','smile','happy','glare','sleepy'];
     const vpick = (a) => a[Math.floor(Math.random() * a.length)];
     const vr = (lo, hi) => lo + Math.random() * (hi - lo);
@@ -2480,12 +2479,11 @@ window.defineFisherKit = function (THREE) {
       O.shirt = vpick(V_SHIRTS); O.pants = vpick(V_PANTS); O.sleeves = vchance(adult ? 0.85 : 0.6); O.shorts = !adult && vchance(0.6);
       O.shoes = vchance(adult ? 0.9 : 0.5); O.shoeColor = vpick(['#3a2b22', '#2b2420', '#6b4a2e', '#8a3a2e', '#e8e2d6']);
       const X = D.extras;
-      X.facialHair = adult && O.style !== 'dress' && vchance(0.5) ? vpick(['mustache', 'beard']) : 'none';
+      X.facialHair = 'none';   // no mustaches or beards on villagers (the DevKit can still add one by hand)
       X.facialHairColor = hair; X.glasses = vchance(adult ? 0.3 : 0.1); X.glassesColor = vpick(['#2b2420', '#6b3a2a', '#c9a35a', '#3d5a9e']);
-      if (H.style === 'bald' && X.facialHair === 'none' && adult && vchance(0.5)) X.facialHair = 'mustache';
       return {
         adult,
-        name: pickName(adult ? (X.facialHair !== 'none' ? V_BEARD_NAMES : V_ADULT_NAMES) : V_NAMES, opts.taken),
+        name: pickName(adult ? V_ADULT_NAMES : V_NAMES, opts.taken),
         color: O.style === 'dress' ? D.body.dress : O.style === 'overalls' ? O.pants : O.shirt,   // their marker colour
         mood: D.expression.mode
       };
