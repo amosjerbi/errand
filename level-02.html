@@ -740,7 +740,28 @@ function villagerTick(c, dt, walking, heading, animK = 1, far = 60) {
   c.update(dt, _vZero, true);
   return true;
 }
-let paxJolt = 0, grabJolt = 0;   // the truck's biggest bump this frame, for passengers riding in the back
+let paxJolt = 0, grabJolt = 0;
+// riders in the open bed look miserable in the rain, and cheer back up when it stops
+function rainFace(c) { const wet = typeof WX !== 'undefined' && WX.rain > .5, m = c.options.expressionMode;
+  if (wet && m !== 'sad') { c._rainPrev = m; c.setExpressionMode('sad'); }
+  else if (!wet && m === 'sad' && c._rainPrev) { c.setExpressionMode(c._rainPrev); c._rainPrev = null; } }
+// speech bubbles that follow someone round (even sat in the truck bed), plus a tiny made-up voice
+const bubbles = [], _bw = new THREE.Vector3();
+function sayOver(c, text, t = 1.8) { let b = bubbles.find(q => q.c === c); if (!b) { b = { c, sp: paxLabel(), t: 0 }; bubbles.push(b); }
+  b.sp.userData.draw(text, c.dress); b.t = t; }
+function updateBubbles(dt) { for (const b of bubbles) { b.t -= dt; const g = b.c.group;
+  if (b.t <= 0 || !g.visible || !running) { b.sp.visible = false; continue; }
+  g.getWorldPosition(_bw); const dc = camera.position.distanceTo(_bw); b.sp.visible = dc < 60;
+  b.sp.position.set(_bw.x, _bw.y + (b.c.adult ? 2.4 : 1.9), _bw.z); const k = clamp(dc / 18, .7, 1.6); b.sp.scale.set(3.2 * k, .6 * k, 1); } }
+function peepVoice(kind, adult) { if (!ac || muted) return; try {   // 'yay' climbs up, 'ohno' sinks in two syllables
+  const t = ac.currentTime, base = (adult ? 200 : 330) * (.92 + Math.random() * .16), yay = kind === 'yay';
+  const syl = yay ? [[.95, 1.5, 0, .34]] : [[1.05, .95, 0, .2], [.92, .62, .25, .36]];
+  for (const [a, z, d, len] of syl) { const t0 = t + d, o = ac.createOscillator(); o.type = 'sawtooth';
+    o.frequency.setValueAtTime(base * a, t0); o.frequency.exponentialRampToValueAtTime(base * z, t0 + len);
+    const f1 = ac.createBiquadFilter(); f1.type = 'bandpass'; f1.Q.value = 4; f1.frequency.setValueAtTime(yay ? 350 : 520, t0); f1.frequency.linearRampToValueAtTime(yay ? 820 : 560, t0 + len * .5);
+    const f2 = ac.createBiquadFilter(); f2.type = 'bandpass'; f2.Q.value = 6; f2.frequency.setValueAtTime(yay ? 2200 : 900, t0); f2.frequency.linearRampToValueAtTime(yay ? 1300 : 850, t0 + len * .5);
+    const g = ac.createGain(); g.gain.setValueAtTime(0, t0); g.gain.linearRampToValueAtTime(.4, t0 + .03); g.gain.setValueAtTime(.4, t0 + len * .6); g.gain.linearRampToValueAtTime(0, t0 + len);
+    o.connect(f1).connect(g); o.connect(f2).connect(g); g.connect(master); o.start(t0); o.stop(t0 + len + .05); } } catch (e) {} }   // the truck's biggest bump this frame, for passengers riding in the back
 function gableRoof(w,d,rh,mat,parent,y){
   const s=new THREE.Shape();s.moveTo(-w/2-.45,0);s.lineTo(w/2+.45,0);s.lineTo(0,rh);s.closePath();
   const g=new THREE.ExtrudeGeometry(s,{depth:d+.7,bevelEnabled:false});g.translate(0,0,-(d+.7)/2);
@@ -3180,7 +3201,7 @@ function updatePassengers(dt) {
         if (!car.air && sp < 4.5 && paxRiding.length < PAX_MAX && d < 9 && nearTruck(P.x, P.z, 3.4)) {   // climb in the back
           const used = paxRiding.map(q => q.seat); P.seat = used.includes(0) ? 1 : 0; paxRiding.push(P);
           P.state = 'hop'; P.t = 0; P.from = g.position.clone(); P.f0 = c.facingAngle; c.triggerAction('jump');
-          paxSay(P, `Hi! To ${locs[P.dest].name}, please`, 3);
+          c.setExpressionMode('happy'); sayOver(c, 'Yay!'); peepVoice('yay', c.adult);
         }
       }
       g.position.y = groundY(P.x, P.z);
@@ -3195,7 +3216,7 @@ function updatePassengers(dt) {
     } else if (P.state === 'ride') {
       P.rideT += dt; g.position.copy(paxSeat(P.seat, P)); g.position.y = Math.abs(Math.sin(P.rideT * (3 + sp * .4))) * Math.min(.06, sp * .003);
       if (c.state !== 'sit') c.setState('sit');
-      villagerTick(c, dt, false, Math.PI); riderHead(c, dt, Math.PI);
+      villagerTick(c, dt, false, Math.PI); riderHead(c, dt, Math.PI); rainFace(c);
       const L = locs[P.dest];
       if (live && Math.hypot(car.x - L.x, car.z - L.z) < 8 && sp < 4 && !car.air) {   // here! hop out on the stop's side
         const w = g.getWorldPosition(new THREE.Vector3()); scene.add(g); g.position.copy(w);
@@ -3293,7 +3314,7 @@ function grabPed(p) {
   const used = grabbed.map(q => q.seat); let seat = 0; while (used.includes(seat)) seat++;
   const c = p.vc, g = p.g; p.gone = true; p.grab = true;
   grabbed.push({ p, c, g, seat, state: 'hop', t: 0, from: g.position.clone(), f0: c.facingAngle, rideT: 0 });
-  c.setState('idle'); c.triggerAction('jump'); c.setExpressionMode('surprised'); padRumble(.35, .5, 120);
+  c.setState('idle'); c.triggerAction('jump'); c.setExpressionMode('surprised'); padRumble(.35, .5, 120); sayOver(c, 'Oh no!'); peepVoice('ohno', c.adult);
   addStar(`${c.vname} is in the back of your truck! Splash into the lake to lose the police`);
   return true;
 }
@@ -3319,7 +3340,7 @@ function updateGrabbed(dt) {
     } else {
       G.rideT += dt; g.position.copy(grabSeat(G.seat)); g.position.y = Math.abs(Math.sin(G.rideT * (3 + sp * .4) + G.seat)) * Math.min(.07, sp * .004);
       if (c.state !== 'sit') c.setState('sit');
-      villagerTick(c, dt, false, grabFace(G.seat)); riderHead(c, dt, grabFace(G.seat));
+      villagerTick(c, dt, false, grabFace(G.seat)); riderHead(c, dt, grabFace(G.seat)); rainFace(c);
     }
   }
   // a big bump throws one of them out the back
@@ -3372,7 +3393,7 @@ const camDir=new THREE.Vector3();
 function frame(){
   if(paused){clock.getDelta();updateDayCycle(0);renderer.render(scene,camera);requestAnimationFrame(frame);return;}
   const dt=Math.min(clock.getDelta(),.05);elapsed+=dt;
-  updateCar(dt);updateBunker(dt);updatePassengers(dt);updateGrabbed(dt);updateCity(dt);updateCops(dt);updateHydrants(dt);
+  updateCar(dt);updateBunker(dt);updatePassengers(dt);updateBubbles(dt);updateGrabbed(dt);updateCity(dt);updateCops(dt);updateHydrants(dt);
   if(running){playTime+=dt;checkJob(dt);}
   updateFallen(dt);updateOranges(dt);updateFire(dt);updateBeachBalls(dt);
   if(vPop>0){vPop=Math.max(0,vPop-dt*3);const k=1+Math.sin(vPop*Math.PI)*.12;V.model.scale.set(k,1/k*1.0+(k-1)*.4,k);if(!vPop)V.model.scale.set(1,1,1);}

@@ -2465,7 +2465,7 @@ window.defineFisherKit = function (THREE) {
       H.length = adult ? vr(0.7, 1.3) : vr(0.85, 1.5); H.volume = vr(0.9, 1.15); H.hairline = vr(0.1, 0.32);
       H.hairlineShape = vchance(0.6) ? 'angular' : 'round'; H.points = 2 + Math.floor(Math.random() * 4); H.notch = vr(0.12, 0.3);
       H.topBuns = vchance(0.5); H.pigtails = !adult && vchance(0.5); H.bangs = vchance(0.8); H.frontLocks.show = vchance(0.55); H.bunSize = vr(1.1, 1.6);
-      D.head.skin = vpick(V_SKINS); D.head.size = vr(0.92, 1.08); D.head.width = vr(0.94, 1.08); D.head.height = vr(0.94, 1.06);
+      D.head.skin = vpick(V_SKINS); D.head.size = vr(0.92, 1.08) * (adult ? 1 : 1.2); D.head.width = vr(0.94, 1.08); D.head.height = vr(0.94, 1.06);   // kids get a big, round head
       D.face.eyes.iris = vpick(V_EYES); D.face.brows.color = '#' + new THREE.Color(hair).multiplyScalar(0.45).getHexString();
       D.face.blush.size = adult ? vr(0.2, 0.8) : vr(0.5, 1.2);
       D.face.eyes.size = Math.min(1.5, D.face.eyes.size * (adult ? vr(0.74, 0.88) : vr(0.9, 1.02)));
