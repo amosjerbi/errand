@@ -156,6 +156,7 @@ window.defineFisherKit = function (THREE) {
       happy:     { eyeStyle: 'happy',  eyeOpen: 1.0,  pupil: 1.0,  gazeX: 0, gazeY: 0,    browTilt: -0.12, browRaise: 0.022,  browTint: 0, mouthCurve: 1.0,  mouthOpen: 0.6,  mouthRound: 0,   mouthWidth: 1.15, teeth: false, blush: 1.3 },
       surprised: { eyeStyle: 'open',   eyeOpen: 1.2,  pupil: 0.65, gazeX: 0, gazeY: 0.1,  browTilt: -0.15, browRaise: 0.045,  browTint: 0, mouthCurve: 0,    mouthOpen: 0.8,  mouthRound: 1,   mouthWidth: 0.7,  teeth: false, blush: 0.9 },
       sad:       { eyeStyle: 'open',   eyeOpen: 0.78, pupil: 1.1,  gazeX: 0, gazeY: -0.45, browTilt: -0.42, browRaise: 0.02,  browTint: 0, mouthCurve: -0.9, mouthOpen: 0,    mouthRound: 0,   mouthWidth: 0.85, teeth: false, blush: 0.75 },
+      rainy:     { eyeStyle: 'squint', eyeOpen: 1.0,  pupil: 1.0,  gazeX: 0, gazeY: -0.3, browTilt: -0.42, browRaise: 0.02,  browTint: 0, mouthCurve: -0.9, mouthOpen: 0,    mouthRound: 0,   mouthWidth: 0.85, teeth: false, blush: 0.75 }, // sad, eyes screwed shut against the rain
       sleepy:    { eyeStyle: 'sleepy', eyeOpen: 0.4,  pupil: 1.0,  gazeX: 0, gazeY: 0,    browTilt: -0.05, browRaise: -0.01,  browTint: 0, mouthCurve: 0.2,  mouthOpen: 0.18, mouthRound: 0.8, mouthWidth: 0.6,  teeth: false, blush: 1.0 }
     };
     const FACE_NAMES = Object.keys(FACE_PRESETS);

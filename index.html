@@ -720,9 +720,9 @@ function villagerTick(c, dt, walking, heading, animK = 1, far = 60) {
 let paxJolt = 0, grabJolt = 0;
 // riders in the open bed look miserable in the rain, and cheer back up when it stops
 function rainFace(c) { const wet = typeof WX !== 'undefined' && WX.rain > .5, m = c.options.expressionMode;
-  if (wet && m !== 'sad') { c._rainPrev = m; c.setExpressionMode('sad'); }
-  else if (!wet && m === 'sad' && c._rainPrev) { c.setExpressionMode(c._rainPrev); c._rainPrev = null; } }
-// speech bubbles that follow someone round (even sat in the truck bed), plus a tiny made-up voice
+  if (wet && m !== 'rainy') { c._rainPrev = m; c.setExpressionMode('rainy'); }
+  else if (!wet && m === 'rainy' && c._rainPrev) { c.setExpressionMode(c._rainPrev); c._rainPrev = null; } }
+// speech bubbles that follow someone round (even sat in the truck bed), plus a pickup blip
 const bubbles = [], _bw = new THREE.Vector3();
 function sayOver(c, text, t = 1.8) { let b = bubbles.find(q => q.c === c); if (!b) { b = { c, sp: paxLabel(), t: 0 }; bubbles.push(b); }
   b.sp.userData.draw(text, c.dress); b.t = t; }
@@ -730,15 +730,20 @@ function updateBubbles(dt) { for (const b of bubbles) { b.t -= dt; const g = b.c
   if (b.t <= 0 || !g.visible || !running) { b.sp.visible = false; continue; }
   g.getWorldPosition(_bw); const dc = camera.position.distanceTo(_bw); b.sp.visible = dc < 60;
   b.sp.position.set(_bw.x, _bw.y + (b.c.adult ? 2.4 : 1.9), _bw.z); const k = clamp(dc / 18, .7, 1.6); b.sp.scale.set(3.2 * k, .6 * k, 1); } }
-function peepVoice(kind, adult) { if (!ac || muted) return; try {   // 'yay' climbs up, 'ohno' sinks in two syllables
-  const t = ac.currentTime, base = (adult ? 200 : 330) * (.92 + Math.random() * .16), yay = kind === 'yay';
-  const syl = yay ? [[.95, 1.5, 0, .34]] : [[1.05, .95, 0, .2], [.92, .62, .25, .36]];
-  for (const [a, z, d, len] of syl) { const t0 = t + d, o = ac.createOscillator(); o.type = 'sawtooth';
-    o.frequency.setValueAtTime(base * a, t0); o.frequency.exponentialRampToValueAtTime(base * z, t0 + len);
-    const f1 = ac.createBiquadFilter(); f1.type = 'bandpass'; f1.Q.value = 4; f1.frequency.setValueAtTime(yay ? 350 : 520, t0); f1.frequency.linearRampToValueAtTime(yay ? 820 : 560, t0 + len * .5);
-    const f2 = ac.createBiquadFilter(); f2.type = 'bandpass'; f2.Q.value = 6; f2.frequency.setValueAtTime(yay ? 2200 : 900, t0); f2.frequency.linearRampToValueAtTime(yay ? 1300 : 850, t0 + len * .5);
-    const g = ac.createGain(); g.gain.setValueAtTime(0, t0); g.gain.linearRampToValueAtTime(.4, t0 + .03); g.gain.setValueAtTime(.4, t0 + len * .6); g.gain.linearRampToValueAtTime(0, t0 + len);
-    o.connect(f1).connect(g); o.connect(f2).connect(g); g.connect(master); o.start(t0); o.stop(t0 + len + .05); } } catch (e) {} }   // the truck's biggest bump this frame, for passengers riding in the back
+function pickupSnd(kind) { if (!ac || muted) return; try {   // a quick bright blip as someone lands in the bed (mission riders get a higher, happier pair)
+  const t = ac.currentTime, notes = kind === 'yay' ? [784, 1175] : [523, 659];
+  notes.forEach((f, i) => { const t0 = t + i * .07, o = ac.createOscillator(), g = ac.createGain(); o.type = 'triangle';
+    o.frequency.setValueAtTime(f * .9, t0); o.frequency.exponentialRampToValueAtTime(f, t0 + .02);
+    g.gain.setValueAtTime(0, t0); g.gain.linearRampToValueAtTime(.14, t0 + .008); g.gain.exponentialRampToValueAtTime(.001, t0 + .16);
+    o.connect(g).connect(master); o.start(t0); o.stop(t0 + .18); }); } catch (e) {} }
+function rescueSnd() { if (!ac || muted) return; try {   // a cop rescues a rider: a short siren yelp, then a falling "lost one" pair
+  const t = ac.currentTime, o = ac.createOscillator(), g = ac.createGain(), lp = ac.createBiquadFilter(); o.type = 'square'; lp.type = 'lowpass'; lp.frequency.value = 2400;
+  o.frequency.setValueAtTime(650, t); o.frequency.exponentialRampToValueAtTime(1400, t + .14); o.frequency.exponentialRampToValueAtTime(700, t + .3);
+  g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(.07, t + .02); g.gain.setValueAtTime(.07, t + .24); g.gain.linearRampToValueAtTime(0, t + .32);
+  o.connect(lp).connect(g).connect(master); o.start(t); o.stop(t + .34);
+  [659, 440].forEach((f, i) => { const t0 = t + .34 + i * .1, b = ac.createOscillator(), bg = ac.createGain(); b.type = 'triangle'; b.frequency.value = f;
+    bg.gain.setValueAtTime(0, t0); bg.gain.linearRampToValueAtTime(.13, t0 + .008); bg.gain.exponentialRampToValueAtTime(.001, t0 + .2);
+    b.connect(bg).connect(master); b.start(t0); b.stop(t0 + .22); }); } catch (e) {} }   // the truck's biggest bump this frame, for passengers riding in the back
 function gableRoof(w,d,rh,mat,parent,y){
   const s=new THREE.Shape();s.moveTo(-w/2-.45,0);s.lineTo(w/2+.45,0);s.lineTo(0,rh);s.closePath();
   const g=new THREE.ExtrudeGeometry(s,{depth:d+.7,bevelEnabled:false});g.translate(0,0,-(d+.7)/2);
@@ -2528,7 +2533,7 @@ function updatePassengers(dt) {
         if (!car.air && sp < 4.5 && paxRiding.length < PAX_MAX && d < 9 && nearTruck(P.x, P.z, 3.4)) {   // climb in the back
           const used = paxRiding.map(q => q.seat); P.seat = used.includes(0) ? 1 : 0; paxRiding.push(P);
           P.state = 'hop'; P.t = 0; P.from = g.position.clone(); P.f0 = c.facingAngle; c.triggerAction('jump');
-          c.setExpressionMode('happy'); sayOver(c, 'Yay!'); peepVoice('yay', c.adult);
+          c.setExpressionMode('happy'); sayOver(c, 'Yay!'); pickupSnd('yay');
         }
       }
       g.position.y = groundY(P.x, P.z);
@@ -2782,7 +2787,7 @@ function grabPed(p) {
   const used = grabbed.map(q => q.seat); let seat = 0; while (used.includes(seat)) seat++;
   const c = p.vc, g = p.g; p.gone = true; p.grab = true;
   grabbed.push({ p, c, g, seat, state: 'hop', t: 0, from: g.position.clone(), f0: c.facingAngle, rideT: 0 });
-  c.setState('idle'); c.triggerAction('jump'); c.setExpressionMode('surprised'); padRumble(.35, .5, 120); sayOver(c, 'Oh no!'); peepVoice('ohno', c.adult);
+  c.setState('idle'); c.triggerAction('jump'); c.setExpressionMode('surprised'); padRumble(.35, .5, 120); sayOver(c, 'Oh no!'); pickupSnd('grab');
   addStar(`${c.vname} is in the back of your truck! Splash into the lake to lose the police`);
   return true;
 }
@@ -2822,7 +2827,7 @@ function updateGrabbed(dt) {
     if (touch) { grabRescueT = 1;
       const G = [...grabbed].reverse().find(q => q.state === 'ride') || grabbed[grabbed.length - 1], w = grabOff(G);
       grabLoose.splice(grabLoose.indexOf(G), 1); poof(w.x, w.y, w.z); G.g.visible = false; G.c.setExpressionMode(G.c.mood);
-      G.p.grab = false; G.p.goneT = 0; G.p.ox = G.p.oz = 0; if (G.p.type) G.p.state = 'walk'; padRumble(.4, .6, 140);
+      G.p.grab = false; G.p.goneT = 0; G.p.ox = G.p.oz = 0; if (G.p.type) G.p.state = 'walk'; padRumble(.4, .6, 140); rescueSnd();
       copBanner(`<div style="font-size:30px;font-weight:700"><i class="ph-fill ph-police-car"></i> ${G.c.vname} rescued!</div>`, true); clearTimeout(police.bt); police.bt = setTimeout(() => copBanner(null, false), 1800); }
   }
   // splash into the lake with anyone in the back: the cops give up, the riders jump out and run for the shore, and the boost fills right up
