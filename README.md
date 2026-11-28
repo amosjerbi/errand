@@ -60,7 +60,7 @@ Browsers only see a controller after you press one of its buttons with the page 
 
 ## Features
 
-- Three vehicles: Bruno (blue dropside truck, built from `ford.stl`, the default), Bianca (camper pickup) and Pippo (cream 504-style pickup)
+- Three vehicles: Bruno (blue dropside truck, the default), Bianca (camper pickup) and Pippo (cream 504-style pickup)
 - On-road, off-road and beach errands with loose cargo physics
 - A sunflower field beside the road: rows of sunflowers that sway in the wind and bend aside as you drive through
 - Fire boost: fill it with oranges knocked from trees, completed errands, or a full flock of 3 sheep
@@ -84,6 +84,6 @@ Browsers only see a controller after you press one of its buttons with the page 
 
 - `index.html`: the Valley (level 1)
 - `level-02.html`: the Town (level 2)
-- `ford-model.js`: Bruno's mesh, packed from `ford.stl`
+- `ford-model.js`: Bruno's mesh (the truck model, packed so the game loads it as a script)
 - `music/`: background music and the grass driving sound
 - `screenshots/`: images used in this README

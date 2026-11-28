@@ -70,6 +70,11 @@
   #tod i{font-size:16px;vertical-align:-2px;margin-right:2px}
   #tod,#flock{display:inline-block;vertical-align:middle}
   #flock{margin-left:14px;white-space:nowrap}
+  #pax{display:inline-block;vertical-align:middle;margin-left:14px;white-space:nowrap}
+  #pax i{font-size:16px;vertical-align:-2px;margin-right:3px}
+  #paxTo{font-size:13px;line-height:1.35;margin-top:4px}
+  #paxTo div{white-space:nowrap}
+  #paxTo i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:0;box-shadow:0 0 0 2px rgba(255,255,255,.85)}
   #flock svg{width:20px;height:16px;vertical-align:-3px;margin-right:4px;filter:drop-shadow(0 1px 2px rgba(0,0,0,.45))}
   #wanted{display:inline-block;vertical-align:middle;margin-left:14px;letter-spacing:1px;color:rgba(255,255,255,.35)}#wanted b{color:#ffd76a;font-weight:inherit}#wanted.pop{animation:flockPop .45s ease-out}
   #flock.full{color:#ffd76a}#flock.pop{animation:flockPop .45s ease-out}
@@ -184,7 +189,7 @@
 <div id="pauseBack"></div>
 <div id="job" class="hud card" role="dialog" aria-label="Paused"><div class="pauseHead">Sunfield</div><div class="lbl" id="jobLbl">Errand</div><div class="txt" id="jobTxt">—</div><div class="sub" id="jobSub"></div><div id="items"></div><div class="tally">◎ <span id="coins">0</span> · ✅ <span id="dels">0</span> errands done · ⏱ <span id="timer">0:00</span></div><div class="tankUp"><div class="row"><span><i class="ph-fill ph-fire"></i> Boost tank upgrade</span><b id="tankCount">3 tanks</b></div><div class="tankBar" id="tankBar"><i></i><i></i><i></i></div><small id="tankTxt">Complete 3 errands = +1 boost tank</small></div><div class="pauseBtns"><button id="resumeBtn"><i class="ph-fill ph-play"></i> Resume</button><button id="freezeBtn" aria-pressed="false"><i class="ph-fill ph-clock"></i> <span id="freezeTxt">Freeze time: Off</span></button><button id="skipTodBtn"><i class="ph-fill ph-sun-horizon"></i> Next time of day</button><button id="weatherBtn"><i class="ph-fill ph-cloud-sun"></i> <span id="weatherTxt">Weather: Auto</span></button><button id="lvBtn" style="display:none"></button></div></div>
 <div id="lvBanner"></div>
-<div id="stats" class="hud"><div class="small" id="tod"><i class="ph-fill ph-sun-horizon"></i> 7:25</div><div class="small" id="flock" title="Sheep in the truck"><svg viewBox="0 0 20 16" aria-hidden="true"><g fill="currentColor"><circle cx="6" cy="7" r="3.4"/><circle cx="10" cy="5.6" r="3.6"/><circle cx="13.6" cy="7.4" r="3.2"/><circle cx="9.4" cy="9.2" r="3.4"/><rect x="6" y="10" width="1.8" height="5" rx=".9"/><rect x="12" y="10" width="1.8" height="5" rx=".9"/></g><ellipse cx="3.4" cy="6.4" rx="2.6" ry="2.2" fill="#3a302b"/><ellipse cx="2.6" cy="4.3" rx="1.2" ry=".7" fill="#3a302b" transform="rotate(-25 2.6 4.3)"/></svg><span id="flockN">0/3</span></div><div class="small" id="wanted" title="Wanted level">★★★★★</div></div>
+<div id="stats" class="hud"><div class="small" id="tod"><i class="ph-fill ph-sun-horizon"></i> 7:25</div><div class="small" id="flock" title="Sheep in the truck"><svg viewBox="0 0 20 16" aria-hidden="true"><g fill="currentColor"><circle cx="6" cy="7" r="3.4"/><circle cx="10" cy="5.6" r="3.6"/><circle cx="13.6" cy="7.4" r="3.2"/><circle cx="9.4" cy="9.2" r="3.4"/><rect x="6" y="10" width="1.8" height="5" rx=".9"/><rect x="12" y="10" width="1.8" height="5" rx=".9"/></g><ellipse cx="3.4" cy="6.4" rx="2.6" ry="2.2" fill="#3a302b"/><ellipse cx="2.6" cy="4.3" rx="1.2" ry=".7" fill="#3a302b" transform="rotate(-25 2.6 4.3)"/></svg><span id="flockN">0/3</span></div><div class="small" id="pax" title="Passengers in the back"><i class="ph-fill ph-person-simple"></i><span id="paxN">0/2</span></div><div class="small" id="wanted" title="Wanted level">★★★★★</div><div class="small" id="paxTo"></div></div>
 <div id="compass" class="hud"><div id="arrow"><svg id="arrSvg" width="26" height="26" viewBox="0 0 26 26"><path d="M13 2 L22 22 L13 17 L4 22 Z" fill="#e0703f" stroke="#2b2420" stroke-width="2.4" stroke-linejoin="round"/></svg></div><div id="dist">0 m</div></div>
 <div id="speed" class="hud"><span class="n" id="spd">0</span> <span class="u">km/h</span><div id="boostRow"><i class="ph-fill ph-fire boostIc"></i><div id="boostBar"><div class="seg"><i></i></div><div class="seg"><i></i></div><div class="seg"><i></i></div></div></div></div>
 <div id="toast" class="hud card"></div>
@@ -213,6 +218,8 @@
     <b class="h">How to play</b>
     <p>Pick up loads around the valley and deliver them. Take the bumps gently or your cargo ends up on the road.</p>
     <p><kbd>W A S D</kbd> / arrows drive · <kbd>Space</kbd> handbrake · <kbd>Shift</kbd> fire boost · <kbd>H</kbd> horn · <kbd>C</kbd> camera · <kbd>T</kbd> time of day · <kbd>Y</kbd> weather · <kbd>R</kbd> back to road · <kbd>Esc</kbd> show / hide your errand</p>
+    <p>🧍 Villagers wait at the stops with a little sign saying where they're going. Roll up slowly and they hop in the back (two at a time), then stop at their place to drop them off and get paid. Big bumps bounce them out, and they don't like being bowled over!</p>
+    <p>🚨 Everyone else just out for a walk gets scooped into the back if you drive into them, and each one is a wanted star (up to ★★★★★). Police cars that touch you rescue a rider. Drive into the lake with riders aboard and the police give up, your riders swim for the shore, and your boost fills right up (no riders? dive fully under to lose them).</p>
     <p>🎮 Controller: <kbd>Left stick</kbd> steer · <kbd>RT</kbd>/<kbd>A</kbd> gas · <kbd>LT</kbd>/<kbd>B</kbd> brake · <kbd>X</kbd> handbrake · <kbd>RB</kbd> boost · <kbd>Y</kbd> horn · <kbd>D-pad ↑</kbd> camera · <kbd>D-pad ↓</kbd> back to road · <kbd>Select</kbd> time of day · <kbd>Start</kbd> pause</p>
     <div class="boostInfo">
       <b>🔥 How to fill the boost</b>
@@ -231,6 +238,7 @@
 </div>
 
 <script src="ford-model.js"></script>
+<script src="fisher-kit.js"></script>
 <script type="module">
 import * as THREE from 'three';
 
@@ -701,6 +709,38 @@ const dummy0=new THREE.Object3D();
 // ---------- building helpers ----------
 const B=(w,h,d)=>new THREE.BoxGeometry(w,h,d);
 function mesh(geo,mat,x=0,y=0,z=0,parent){const m=new THREE.Mesh(geo,mat);m.position.set(x,y,z);m.castShadow=true;m.receiveShadow=true;if(parent)parent.add(m);return m;}
+
+// =====================================================================================
+// VILLAGERS: the characters from characters/studio/3d_character.html (same rig, faces and moves),
+// each one rolled with a different look: hair style and colour, skin, dress, eyes, build, mood.
+// =====================================================================================
+const CharKit = window.defineFisherKit(THREE);   // characters/fisher-kit.js: the same character as studio/3d_character.html
+const VILLAGER_SCALE = .52;   // the rig is ~2.4 units tall: this makes ~1.25 m chibis
+// half the villagers are grown-ups; the look comes from rollVillager() in fisher-kit.js
+const villagerNames = new Set();   // so two villagers don't share a name
+function makeVillager(opts = {}) {
+  const c = new CharKit.FisherCharacterController({ arenaBounds: 1e9 });
+  const D = CharKit.devkitDefaults(CharKit.DEVKIT);
+  const look = CharKit.rollVillager(D, { scale: VILLAGER_SCALE, taken: villagerNames, ...opts });
+  c.applyDevkit(D);
+  c.group.traverse(o => { if (o.isMesh) { o.castShadow = false; o.receiveShadow = false; } });   // the contact shadow blob is enough, and cheaper
+  c.mood = look.mood; c.dress = look.color; c.vname = look.name; c.adult = look.adult;
+  return c;
+}
+// animate one villager, or hide it when far from the camera (no draw, no matrix updates)
+const _vZero = new THREE.Vector3();
+function villagerTick(c, dt, walking, heading, animK = 1, far = 60) {
+  const on = c.group.parent !== scene || camera.position.distanceToSquared(c.group.position) < far * far;
+  c.group.visible = on; c.group.matrixWorldAutoUpdate = on;
+  if (!on) return false;
+  if (walking) { c.forceContinuousRun = true; if (c.state === 'idle') c.setState('run'); }
+  else { c.forceContinuousRun = false; if (c.state === 'run') c.setState('idle'); }
+  c.options.speedMultiplier = walking ? animK : 1;
+  if (heading !== null) c.facingAngle = heading;
+  c.update(dt, _vZero, true);
+  return true;
+}
+let paxJolt = 0, grabJolt = 0;   // the truck's biggest bump this frame, for passengers riding in the back
 function gableRoof(w,d,rh,mat,parent,y){
   const s=new THREE.Shape();s.moveTo(-w/2-.45,0);s.lineTo(w/2+.45,0);s.lineTo(0,rh);s.closePath();
   const g=new THREE.ExtrudeGeometry(s,{depth:d+.7,bevelEnabled:false});g.translate(0,0,-(d+.7)/2);
@@ -1178,11 +1218,7 @@ const crng=mulberry(31337),CR=(a,b)=>a+(b-a)*crng(),cpick=a=>a[Math.floor(crng()
   // people: some walk round a crossroads using the zebra crossings when it's their turn, some stroll round a block
   { const shirts=['#e0703f','#2f7489','#f1c453','#7d9a43','#c8453a','#8a6bb8','#f4efe2','#d85a7f','#5fb3c0'],skins=['#f1c9a5','#d9a27a','#a8714d','#7a4e33','#e8b896'],pants=['#3a3d52','#5a4a3a','#2b2420','#6b7a8a','#8a6a4e'];
     const legG=B(.17,.8,.2).translate(0,-.4,0),armG=B(.12,.62,.14).translate(0,-.31,0);
-    function makePed(){const g=new THREE.Group(),sh=toon(cpick(shirts)),pa=toon(cpick(pants)),sk=toon(cpick(skins));
-      const legs=[-1,1].map(s=>{const l=mesh(legG,pa,s*.12,.85,0,g);return l;});
-      mesh(B(.46,.66,.28),sh,0,1.18,0,g);const arms=[-1,1].map(s=>mesh(armG,sh,s*.3,1.48,0,g));
-      mesh(new THREE.SphereGeometry(.18,10,8),sk,0,1.72,0,g);if(crng()<.6)mesh(new THREE.SphereGeometry(.19,10,6,0,Math.PI*2,0,Math.PI/2),toon(cpick(['#2b2420','#6b4a2e','#c9a35a','#9a958a'])),0,1.76,-.01,g);
-      g.scale.setScalar(CR(.9,1.08));scene.add(g);return{g,legs,arms};}
+    function makePed(){const c=makeVillager();scene.add(c.group);return{g:c.group,legs:[],arms:[],vc:c};}   // a villager from 3d_character.html
     const o=RW+2;   // crossing line: the middle of the zebra
     for(let k=0;k<16;k++){const sig=signals[(crng()*signals.length)|0],{ap}=sig;
       // corners anticlockwise from +x+z; edge k crosses (in order) the north arm, west arm, south arm, east arm
@@ -1256,21 +1292,21 @@ function updateCity(dt){
     // step aside for the truck
     const dx=x+p.ox-car.x,dz=z+p.oz-car.z,d=Math.hypot(dx,dz);
     const tsp=Math.hypot(car.vx,car.vz),tfx=Math.sin(car.h),tfz=Math.cos(car.h);
-    if(tsp>3.5&&car.y<Y+2.5&&V.cols.some(off=>Math.hypot(x+p.ox-(car.x+tfx*off),z+p.oz-(car.z+tfz*off))<1.35)){pedHit(p);continue;}   // too fast to dodge: poof
-    if(d<2.6&&d>.01&&car.y<Y+3&&tsp<=3.5){const k=(2.6-d);p.ox+=dx/d*k;p.oz+=dz/d*k;p.hop=.35;}
+    if(!car.air&&car.y<Y+2.5&&grabbed.length<GRAB_MAX&&V.cols.some(off=>Math.hypot(x+p.ox-(car.x+tfx*off),z+p.oz-(car.z+tfz*off))<1.5)){grabPed(p);continue;}   // touched by the truck: scooped into the back
+    if(d<2.6&&d>.01&&car.y<Y+3){const k=(2.6-d);p.ox+=dx/d*k;p.oz+=dz/d*k;p.hop=.35;}
     p.ox*=Math.exp(-dt*1.2);p.oz*=Math.exp(-dt*1.2);x+=p.ox;z+=p.oz;
     if(p.hop>0)p.hop-=dt;
     const walking=moving;p.ph+=dt*(walking?sp*5.5:0);
     const sw=walking?Math.sin(p.ph)*.55:0;
-    p.legs[0].rotation.x=sw;p.legs[1].rotation.x=-sw;p.arms[0].rotation.x=-sw*.8;p.arms[1].rotation.x=sw*.8;
-    p.g.position.set(x,Y+(walking?Math.abs(Math.cos(p.ph))*.05:0)+(p.hop>0?Math.sin(p.hop/.35*Math.PI)*.35:0),z);
+    p.g.position.set(x,Y+(p.hop>0?Math.sin(p.hop/.35*Math.PI)*.35:0),z);
     const hx=Bc[0]-A[0],hz=Bc[1]-A[1];
     const th=Math.atan2(hx,hz);
     const dth=((th-p.g.rotation.y+Math.PI*3)%(Math.PI*2))-Math.PI;p.g.rotation.y+=dth*Math.min(1,dt*8);
+    villagerTick(p.vc,dt,walking,p.g.rotation.y,.3+sp*.12);   // run cycle slowed to a walk
   }
 }
 
-// ---------- police: knock a pedestrian over and they vanish in a puff, and the cops tail you until you hide under the lake ----------
+// ---------- police: every walker you scoop into the back is a wanted star, and the cops tail you until you hide under the lake ----------
 const cops=[];
 const police={wanted:0,banner:null};
 const copLightR=new THREE.MeshBasicMaterial({color:'#ff4a4a'}),copLightB=new THREE.MeshBasicMaterial({color:'#3fd6ff'});
@@ -1308,9 +1344,6 @@ function makeCop(){const g=new THREE.Group(),black=toon('#24272c'),white=toon('#
 function copBanner(html,show){if(!police.banner){const d=document.createElement('div');d.style.cssText='position:fixed;left:50%;top:18%;transform:translateX(-50%);z-index:30;pointer-events:none;font-family:Fredoka,system-ui,sans-serif;text-align:center;color:#fff;text-shadow:0 3px 0 #2b2420,0 0 18px rgba(0,0,0,.4);transition:opacity .3s;opacity:0';document.body.appendChild(d);police.banner=d;}
   if(html!==null)police.banner.innerHTML=html;police.banner.style.opacity=show?1:0;}
 function poof(x,y,z){for(let k=0;k<14;k++)puff(x+R(-.6,.6),y+R(.2,1.6),z+R(-.6,.6),1.6,R(-3,3),R(-3,3),'#f4efe2');}   // silent: just the puff
-function pedHit(p){if(p.gone)return;p.gone=true;p.g.visible=false;p.state='walk';p.goneT=0;
-  poof(p.g.position.x,p.g.position.y,p.g.position.z);padRumble(.4,.6,140);
-  addStar('The police are after you! Dive under the lake to lose them');}
 function addStar(msg){police.wanted=Math.min(5,police.wanted+1);syncStars();
   const want=Math.min(6,1+police.wanted);while(cops.filter(c=>!c.leaving).length<want)spawnCop();
   copBanner(`<div style="font-size:42px;font-weight:700">🚨 ${'★'.repeat(police.wanted)}<span style="opacity:.35">${'★'.repeat(5-police.wanted)}</span></div><div style="font-size:18px">${msg}</div>`,true);
@@ -1335,7 +1368,7 @@ function solidPush(c){   // keep cop cars out of buildings and big obstacles
     for(const off of V.cols)for(const co of[-1.15,0,1.15]){const ex=c.x+sx*co-(car.x+fx*off),ez=c.z+sz*co-(car.z+fz*off),d=Math.hypot(ex,ez);if(d<1.9&&d>1e-3){c.x+=ex/d*(1.9-d);c.z+=ez/d*(1.9-d);c.v*=.85;}}}}
 function updateCops(dt){
   // people who vanished come back after a while, somewhere out of sight
-  for(const p of peds)if(p.gone&&(p.goneT+=dt)>40&&!police.wanted&&Math.hypot(p.g.position.x-car.x,p.g.position.z-car.z)>70){p.gone=false;p.g.visible=true;p.ox=p.oz=0;}
+  for(const p of peds)if(p.gone&&!p.grab&&(p.goneT+=dt)>40&&!police.wanted&&Math.hypot(p.g.position.x-car.x,p.g.position.z-car.z)>70){p.gone=false;p.g.visible=true;p.ox=p.oz=0;}
   const fx=Math.sin(car.h),fz=Math.cos(car.h),sp=Math.hypot(car.vx,car.vz),blink=Math.floor(performance.now()/180)%2;
   let nearest=1e9;
   cops.forEach((c,i)=>{
@@ -2170,7 +2203,7 @@ const pickWheels=[],pickFront=[];
 const pickAnchor=new THREE.Group();pickAnchor.position.set(0,.66,-1.08);pickModel.add(pickAnchor);
 const pickFlames=[];addFlames(pickModel,pickFlames,[-.45,.45],.32,-2.36);
 
-// ---------- vehicle 3: dropside truck built from ford.stl (packed into ford-model.js) ----------
+// ---------- vehicle 3: dropside truck, its mesh packed into ford-model.js ----------
 const fordModel=new THREE.Group();body.add(fordModel);
 const fordWheels=[],fordFront=[];
 { // colours are painted per pixel from the position on the truck (STL units), so edges stay clean whatever the triangles are
@@ -2751,9 +2784,9 @@ function checkJob(dt){
 
 // ---------- audio ----------
 // background music (plain <audio>, so it also plays when the game is opened as a local file)
-const music=new Audio('music/peaceful-journey.mp3');music.loop=true;music.volume=0;music.preload='auto';const MUSIC_VOL=.55;
+const music=new Audio('../music/peaceful-journey.mp3');music.loop=true;music.volume=0;music.preload='auto';const MUSIC_VOL=.55;
 // rustling-grass loop while driving off-road on grass
-const grassSnd=new Audio('music/245030__kwahmah_02__walking-in-the-grass.wav');grassSnd.loop=true;grassSnd.volume=0;grassSnd.preload='auto';let grassVol=0;
+const grassSnd=new Audio('../music/245030__kwahmah_02__walking-in-the-grass.wav');grassSnd.loop=true;grassSnd.volume=0;grassSnd.preload='auto';let grassVol=0;
 function updateGrassSound(dt,on,sp){   // on: 0..1, how much grass is under the truck
   const target=clamp(+on,0,1)*clamp((sp-1.5)/12,0,1)*.7;grassVol+=(target-grassVol)*Math.min(1,dt*6);
   grassSnd.volume=clamp(grassVol,0,1);
@@ -2928,7 +2961,7 @@ function updateCar(dt){
   if(carHit>2){jolt=Math.max(jolt,carHit*.35);shake=Math.max(shake,Math.min(.6,carHit*.05));}   // shoving traffic: a jolt, but silent
   car.suspV+=(-70*car.susp-9*car.suspV)*dt-clamp((gv-car.lastGV)*.02,-.6,.6);car.susp+=car.suspV*dt;car.susp=clamp(car.susp,-.18,.18);car.lastGV=gv;
   // rear door: hard jolts swing it open for a moment
-  updateSheepRiders(dt,jolt);
+  updateSheepRiders(dt,jolt);paxJolt=Math.max(paxJolt,jolt);grabJolt=Math.max(grabJolt,jolt);
   if(rearDoor&&jolt>3&&doorOpenT<=0&&running){doorOpenT=R(.6,1);doorV+=6;if(loose.length)toast('The back door flew open!','Ease off or the load slides out',1.4);}
   if(doorOpenT>0)doorOpenT-=dt;
   { const target=doorOpenT>0?1:0;doorV+=((target-doorAmt)*90-doorV*9)*dt;const was=doorAmt;doorAmt=clamp(doorAmt+doorV*dt,0,1.08);
@@ -3064,12 +3097,246 @@ function updateDayCycle(dt){
 }
 
 // ---------- loop ----------
+
+// =====================================================================================
+// PASSENGERS: villagers wait at the stops with somewhere to go. Roll up slowly and they
+// hop in the back; stop at their place and they hop out and pay. Hard bumps throw them out.
+// =====================================================================================
+const PAX_MAX = 2;
+const pax = [];          // every passenger villager
+let paxRiding = [];      // in the bed, by seat
+const groundY = (x, z) => (typeof CITY !== 'undefined' && inCity(x, z, 0)) ? CITY.Y : heightAt(x, z);
+const paxSeat = (k, P) => new THREE.Vector3(k ? .3 : -.3, 0, BED.zMin + .3 + .3 * (P ? P.c.tune.legLength : 1.4));   // near the tailgate, facing out the back
+function paxSpot(L, k) {   // where someone waits at stop L: a few metres from the errand ring, towards the building
+  let dx = (L.bx ?? L.x + L.sx) - L.x, dz = (L.bz ?? L.z + L.sz) - L.z; const n = Math.hypot(dx, dz) || 1; dx /= n; dz /= n;
+  const along = 6.2, side = (k ? -1 : 1) * 2.4;
+  return [L.x + dx * along - dz * side, L.z + dz * along + dx * side];
+}
+function paxLabel() {   // a little sign over the head: "Mia → Old Mill"
+  const cv = document.createElement('canvas'); cv.width = 512; cv.height = 96;
+  const tex = new THREE.CanvasTexture(cv); tex.colorSpace = THREE.SRGBColorSpace;
+  const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthWrite: false }));
+  sp.scale.set(3.2, .6, 1); sp.renderOrder = 5; scene.add(sp);
+  sp.userData.draw = (text, col) => { const g = cv.getContext('2d'); g.clearRect(0, 0, 512, 96); g.font = '600 40px Fredoka, system-ui, sans-serif';
+    const w = Math.min(500, g.measureText(text).width + 64), x0 = (512 - w) / 2;
+    g.fillStyle = 'rgba(255,250,240,.94)'; g.beginPath(); g.roundRect(x0, 12, w, 68, 34); g.fill();
+    g.fillStyle = col; g.beginPath(); g.arc(x0 + 30, 46, 11, 0, 7); g.fill();
+    g.fillStyle = '#3a2b22'; g.textBaseline = 'middle'; g.fillText(text, x0 + 50, 48, w - 64); tex.needsUpdate = true; };
+  return sp;
+}
+function paxBeam(col) {   // the drop-off spot: a thin beam in the passenger's dress colour
+  const g = new THREE.Group(), m = new THREE.MeshBasicMaterial({ color: col, transparent: true, opacity: .2, side: THREE.DoubleSide, depthWrite: false });
+  g.add(new THREE.Mesh(new THREE.CylinderGeometry(1.6, 1.6, 34, 20, 1, true).translate(0, 17, 0), m));
+  const ring = new THREE.Mesh(new THREE.TorusGeometry(1.8, .14, 6, 32), new THREE.MeshBasicMaterial({ color: col })); ring.rotation.x = Math.PI / 2; ring.position.y = .2; g.add(ring);
+  g.visible = false; scene.add(g); return g;
+}
+const paxDest = home => { let d; do { d = Math.floor(Math.random() * locs.length); } while (d === home); return d; };
+function paxSay(P, text, t = 2.6) { P.say = text; P.sayT = t; P.label.userData.draw(text, P.c.dress); }
+function paxWaitAt(P, home, k) {
+  P.home = home; P.dest = paxDest(home); P.state = 'wait'; P.waitT = 0;
+  [P.x, P.z] = paxSpot(locs[home], k); P.c.group.position.set(P.x, groundY(P.x, P.z), P.z);
+  P.label.userData.draw(`${P.c.vname} → ${locs[P.dest].name}`, P.c.dress);
+}
+{ // one passenger at most stops, two at a couple of them
+  const order = locs.map((_, i) => i).sort(() => Math.random() - .5), want = Math.min(12, locs.length + 2);
+  for (let n = 0; n < want; n++) {
+    const home = order[n % order.length], c = makeVillager(); scene.add(c.group);
+    const P = { c, label: paxLabel(), beam: paxBeam(c.dress), seat: -1, t: 0, vx: 0, vy: 0, vz: 0, sayT: 0, cool: 0, slot: n >= order.length ? 1 : 0 };
+    paxWaitAt(P, home, P.slot); P.c.facingAngle = Math.random() * 6.28; pax.push(P);
+  }
+}
+const truckPts = () => { const fx = Math.sin(car.h), fz = Math.cos(car.h); return V.cols.map(o => [car.x + fx * o, car.z + fz * o]); };
+const nearTruck = (x, z, r) => truckPts().some(([px, pz]) => Math.hypot(x - px, z - pz) < r);
+function paxLaunch(P, vx, vy, vz, flip) {   // thrown: out of the bed, or bumped by the truck
+  const w = P.c.group.getWorldPosition(new THREE.Vector3()); scene.add(P.c.group); P.c.group.position.copy(w);
+  P.vx = vx; P.vy = vy; P.vz = vz; P.state = 'fly'; P.c.setState('idle'); P.c.triggerAction(flip); P.c.contactShadow.visible = true;
+  P.c.setExpressionMode('surprised'); P.beam.visible = false;
+  const i = paxRiding.indexOf(P); if (i >= 0) paxRiding.splice(i, 1);
+}
+function updatePassengers(dt) {
+  const sp = Math.hypot(car.vx, car.vz), jolt = paxJolt; paxJolt = 0;
+  const live = running && !paused;
+  for (const P of pax) {
+    const c = P.c, g = c.group;
+    if (P.sayT > 0 && (P.sayT -= dt) <= 0 && (P.state === 'wait')) P.label.userData.draw(`${c.vname} → ${locs[P.dest].name}`, c.dress);
+    if (P.state === 'wait' || P.state === 'rest') {
+      const dx = car.x - P.x, dz = car.z - P.z, d = Math.hypot(dx, dz);
+      let head = null;
+      if (d < 30) head = c.facingAngle + angDiff(Math.atan2(dx, dz), c.facingAngle) * Math.min(1, dt * 4);   // watch the truck come
+      if (P.state === 'rest' && (P.cool -= dt) <= 0) { paxWaitAt(P, P.home, P.slot); }
+      if (P.state === 'wait' && live) {
+        if (d < 16 && sp < 6 && c.state === 'idle' && Math.random() < dt * .6) c.triggerAction('jump');   // hop, hop: over here!
+        if (sp > 7 && !car.air && nearTruck(P.x, P.z, 1.5)) {   // too fast: bowled over, flip and all
+          const a = Math.atan2(P.x - car.x, P.z - car.z); paxLaunch(P, Math.sin(a) * 6 + car.vx * .3, 6.5, Math.cos(a) * 6 + car.vz * .3, 'frontflip'); paxSay(P, 'Hey!!', 2); continue;
+        }
+        if (!car.air && sp < 4.5 && paxRiding.length < PAX_MAX && d < 9 && nearTruck(P.x, P.z, 3.4)) {   // climb in the back
+          const used = paxRiding.map(q => q.seat); P.seat = used.includes(0) ? 1 : 0; paxRiding.push(P);
+          P.state = 'hop'; P.t = 0; P.from = g.position.clone(); P.f0 = c.facingAngle; c.triggerAction('jump');
+          paxSay(P, `Hi! To ${locs[P.dest].name}, please`, 3);
+        }
+      }
+      g.position.y = groundY(P.x, P.z);
+      villagerTick(c, dt, false, head);
+    } else if (P.state === 'hop') {   // arc into the bed
+      P.t = Math.min(1, P.t + dt / .7); const t = P.t;
+      cargoAnchor.updateWorldMatrix(true, false); const to = cargoAnchor.localToWorld(paxSeat(P.seat, P));
+      g.position.lerpVectors(P.from, to, t); g.position.y += Math.sin(t * Math.PI) * 1.6;
+      villagerTick(c, dt, false, P.f0 + angDiff(car.h + Math.PI, P.f0) * t);
+      if (t >= 1) { cargoAnchor.add(g); g.position.copy(paxSeat(P.seat, P)); c.facingAngle = Math.PI; c.setState('sit'); c.contactShadow.visible = false;
+        P.state = 'ride'; const L = locs[P.dest]; P.beam.position.set(L.x, groundY(L.x, L.z), L.z); P.beam.visible = true; P.rideT = 0; }
+    } else if (P.state === 'ride') {
+      P.rideT += dt; g.position.copy(paxSeat(P.seat, P)); g.position.y = Math.abs(Math.sin(P.rideT * (3 + sp * .4))) * Math.min(.06, sp * .003);
+      if (c.state !== 'sit') c.setState('sit');
+      villagerTick(c, dt, false, Math.PI);
+      const L = locs[P.dest];
+      if (live && Math.hypot(car.x - L.x, car.z - L.z) < 8 && sp < 4 && !car.air) {   // here! hop out on the stop's side
+        const w = g.getWorldPosition(new THREE.Vector3()); scene.add(g); g.position.copy(w);
+        const [sx, sz] = paxSpot(L, P.seat); const dx = sx - w.x, dz = sz - w.z, n = Math.hypot(dx, dz) || 1;
+        P.from = w; P.to = new THREE.Vector3(w.x + dx / n * Math.min(2.6, n), 0, w.z + dz / n * Math.min(2.6, n)); P.to.y = groundY(P.to.x, P.to.z);
+        P.state = 'hopout'; P.t = 0; c.setState('idle'); c.triggerAction('jump'); P.beam.visible = false;
+        paxRiding.splice(paxRiding.indexOf(P), 1);
+        const dist = Math.hypot(L.x - locs[P.home].x, L.z - locs[P.home].z), pay = Math.round(12 + dist / 10);
+        coins += pay; $('coins').textContent = coins; boost = Math.min(boostMax(), boost + 1);
+        paxSay(P, `Thanks! +${pay} ◎`, 3.2); c.setExpressionMode('happy');
+      }
+    } else if (P.state === 'hopout') {
+      P.t = Math.min(1, P.t + dt / .6); const t = P.t;
+      g.position.lerpVectors(P.from, P.to, t); g.position.y += Math.sin(t * Math.PI) * 1.2;
+      villagerTick(c, dt, false, Math.atan2(P.to.x - P.from.x, P.to.z - P.from.z)); c.contactShadow.visible = true;
+      if (t >= 1) { P.state = 'leave'; P.x = P.to.x; P.z = P.to.z; P.home = P.dest; [P.tx, P.tz] = paxSpot(locs[P.home], P.slot); }
+    } else if (P.state === 'leave') {   // stroll over to the stop, then rest a while before wanting to go somewhere new
+      const dx = P.tx - P.x, dz = P.tz - P.z, d = Math.hypot(dx, dz);
+      if (d > .3) { const v = Math.min(d, 1.6 * dt); P.x += dx / d * v; P.z += dz / d * v; }
+      g.position.set(P.x, groundY(P.x, P.z), P.z);
+      villagerTick(c, dt, d > .3, d > .3 ? Math.atan2(dx, dz) : null, .45);
+      if (d <= .3) { P.state = 'rest'; P.cool = 18 + Math.random() * 14; c.setExpressionMode(c.mood); P.label.visible = false; }
+    } else if (P.state === 'fly') {   // ballistic, with the flip from her moveset; lands a bit dizzy
+      P.vy -= 18 * dt; g.position.x += P.vx * dt; g.position.y += P.vy * dt; g.position.z += P.vz * dt;
+      const gy = groundY(g.position.x, g.position.z);
+      villagerTick(c, dt, false, null);
+      if (g.position.y <= gy && P.vy < 0) { g.position.y = gy; P.x = g.position.x; P.z = g.position.z; P.state = 'dazed'; P.t = 0; c.setExpressionMode('sleepy'); c.setState('idle'); }
+    } else if (P.state === 'dazed') {
+      P.t += dt; villagerTick(c, dt, false, c.facingAngle + Math.sin(P.t * 5) * dt * 2);
+      if (P.t > 2.2) { P.state = 'wait'; c.setExpressionMode(c.mood); P.label.userData.draw(`${c.vname} → ${locs[P.dest].name}`, c.dress); }
+    }
+    // the sign: over waiting heads, close enough to read
+    const show = (P.state === 'wait' || P.state === 'dazed' || P.sayT > 0) && P.state !== 'ride' && P.state !== 'hop' && g.visible;
+    const dc = camera.position.distanceTo(g.position);
+    P.label.visible = show && dc < 45 && running;
+    if (P.label.visible) { P.label.position.set(g.position.x, g.position.y + 1.9, g.position.z); const k = clamp(dc / 18, .7, 1.6); P.label.scale.set(3.2 * k, .6 * k, 1); }
+    if (P.beam.visible) P.beam.children[1].scale.setScalar(1 + Math.sin(performance.now() * .004) * .08);
+  }
+  // a big bump throws the last passenger out the back
+  if (jolt > 5 && paxRiding.length && running) {
+    const P = paxRiding[paxRiding.length - 1];
+    if (P.state === 'ride') { const fx = Math.sin(car.h), fz = Math.cos(car.h);
+      paxLaunch(P, car.vx * .6 - fx * 3 + R(-1.5, 1.5), 6 + R(0, 2), car.vz * .6 - fz * 3 + R(-1.5, 1.5), 'backflip'); paxSay(P, 'Whoaaa!', 2.2); }
+  }
+  // HUD: who's in the back and how far they still have to go
+  if ((updatePassengers.t = (updatePassengers.t || 0) - dt) <= 0) { updatePassengers.t = .25;
+    $('paxN').textContent = `${paxRiding.length}/${PAX_MAX}`;
+    $('paxTo').innerHTML = paxRiding.filter(P => P.state === 'ride').map(P => { const L = locs[P.dest];
+      return `<div><i style="background:${P.c.dress}"></i>${P.c.vname} → ${L.name} · ${Math.round(Math.hypot(car.x - L.x, car.z - L.z))} m</div>`; }).join(''); }
+}
+const angDiff = (a, b) => Math.atan2(Math.sin(a - b), Math.cos(a - b));
+
+// =====================================================================================
+// GRABBED: the walkers who aren't waiting with a sign. Drive into one and they're scooped
+// into the back of the truck, and every one in the bed is another wanted star (5 at most).
+// Lose the police (dive under the lake) and once you're back on dry land they hop out and run off.
+// =====================================================================================
+const GRAB_MAX = 5, grabbed = [], grabLoose = [];
+let grabRescueT = 0;   // so one long scrape with a cop car doesn't empty the whole bed at once   // grabbed: in the bed; grabLoose: hopping out, thrown, running off
+function grabSeat(k) {   // facing out the back like the passengers: three across behind the cab, then two a row back
+  const w = Math.min(.5, BED.x - .2), z0 = BED.zMax - .2, z1 = Math.max(BED.zMin + .95, z0 - .75);
+  return new THREE.Vector3([0, -w, w, -w * .8, w * .8][k], 0, k < 3 ? z0 : z1);
+}
+const grabFace = () => Math.PI;
+function grabPed(p) {
+  if (p.gone || grabbed.length >= GRAB_MAX) return false;
+  const used = grabbed.map(q => q.seat); let seat = 0; while (used.includes(seat)) seat++;
+  const c = p.vc, g = p.g; p.gone = true; p.grab = true;
+  grabbed.push({ p, c, g, seat, state: 'hop', t: 0, from: g.position.clone(), f0: c.facingAngle, rideT: 0 });
+  c.setState('idle'); c.triggerAction('jump'); c.setExpressionMode('surprised'); padRumble(.35, .5, 120);
+  addStar(`${c.vname} is in the back of your truck! Splash into the lake to lose the police`);
+  return true;
+}
+function grabOff(G) { const w = G.g.getWorldPosition(new THREE.Vector3()); scene.add(G.g); G.g.position.copy(w); G.c.contactShadow.visible = true;
+  G.c.setState('idle'); const i = grabbed.indexOf(G); if (i >= 0) grabbed.splice(i, 1); grabLoose.push(G); return w; }
+function grabThrow(G, vx, vy, vz) { grabOff(G); G.vx = vx; G.vy = vy; G.vz = vz; G.state = 'fly'; G.c.triggerAction('backflip'); G.c.setExpressionMode('surprised'); }
+function grabHopOut(G, shore) {   // over the side they sat on (or, in the lake, towards the nearest shore)
+  const side = grabSeat(G.seat).x > 0 ? 1 : -1, w = grabOff(G), dl = Math.hypot(w.x, w.z) || 1;
+  let rx = Math.cos(car.h) * side, rz = -Math.sin(car.h) * side; if (shore) { const ox = w.x / dl, oz = w.z / dl; rx = ox + oz * .35 * side; rz = oz - ox * .35 * side; const n = Math.hypot(rx, rz); rx /= n; rz /= n; }
+  G.from = w; G.to = new THREE.Vector3(w.x + rx * 2.4, 0, w.z + rz * 2.4); G.to.y = Math.max(groundY(G.to.x, G.to.z), LAKE_Y - .45);
+  G.state = 'hopout'; G.t = 0; G.c.triggerAction('jump'); G.c.setExpressionMode(shore ? 'surprised' : 'glare');
+}
+function updateGrabbed(dt) {
+  const sp = Math.hypot(car.vx, car.vz), jolt = grabJolt; grabJolt = 0;
+  for (const G of [...grabbed]) {
+    const c = G.c, g = G.g;
+    if (G.state === 'hop') {
+      G.t = Math.min(1, G.t + dt / .55); const t = G.t;
+      cargoAnchor.updateWorldMatrix(true, false); const to = cargoAnchor.localToWorld(grabSeat(G.seat));
+      g.position.lerpVectors(G.from, to, t); g.position.y += Math.sin(t * Math.PI) * 1.8;
+      villagerTick(c, dt, false, G.f0 + angDiff(car.h + grabFace(G.seat), G.f0) * t);
+      if (t >= 1) { cargoAnchor.add(g); g.position.copy(grabSeat(G.seat)); c.setState('sit'); c.contactShadow.visible = false; G.state = 'ride'; G.rideT = 0; }
+    } else {
+      G.rideT += dt; g.position.copy(grabSeat(G.seat)); g.position.y = Math.abs(Math.sin(G.rideT * (3 + sp * .4) + G.seat)) * Math.min(.07, sp * .004);
+      if (c.state !== 'sit') c.setState('sit');
+      villagerTick(c, dt, false, grabFace(G.seat));
+    }
+  }
+  // a big bump throws one of them out the back
+  if (jolt > 5 && running) { const G = [...grabbed].reverse().find(q => q.state === 'ride');
+    if (G) { const fx = Math.sin(car.h), fz = Math.cos(car.h); grabThrow(G, car.vx * .6 - fx * 3 + R(-1.5, 1.5), 6 + R(0, 2), car.vz * .6 - fz * 3 + R(-1.5, 1.5)); } }
+  // a police car touching the truck rescues one rider: gone in a puff (they turn up on their usual walk later)
+  if ((grabRescueT -= dt) <= 0 && grabbed.length && running) {
+    const fx = Math.sin(car.h), fz = Math.cos(car.h);
+    const touch = cops.some(c => !c.leaving && V.cols.some(off => [-1.15, 0, 1.15].some(co =>
+      Math.hypot(c.x + Math.sin(c.h) * co - (car.x + fx * off), c.z + Math.cos(c.h) * co - (car.z + fz * off)) < 2.15)));
+    if (touch) { grabRescueT = 1;
+      const G = [...grabbed].reverse().find(q => q.state === 'ride') || grabbed[grabbed.length - 1], w = grabOff(G);
+      grabLoose.splice(grabLoose.indexOf(G), 1); poof(w.x, w.y, w.z); G.g.visible = false; G.c.setExpressionMode(G.c.mood);
+      G.p.grab = false; G.p.goneT = 0; G.p.ox = G.p.oz = 0; if (G.p.type) G.p.state = 'walk'; padRumble(.4, .6, 140);
+      copBanner(`<div style="font-size:30px;font-weight:700">👮 ${G.c.vname} rescued!</div>`, true); clearTimeout(police.bt); police.bt = setTimeout(() => copBanner(null, false), 1800); }
+  }
+  // splash into the lake with anyone in the back: the cops give up, the riders jump out and run for the shore, and the boost fills right up
+  if (grabbed.length && running && !car.air && car.y < LAKE_Y - .05) {
+    if (police.wanted) { police.wanted = 0; syncStars(); } for (const c of cops) c.leaving = true;
+    boost = boostMax(); popTanks(); bunkerSnd('mega'); padRumble(.6, .8, 260);
+    for (let k = 0; k < 18; k++) puff(car.x + R(-2, 2), LAKE_Y + .2, car.z + R(-2, 2), 1.8, R(-4, 4), R(-4, 4), '#d8f0f2');
+    for (const G of [...grabbed]) grabHopOut(G, true);
+    copBanner(`<div style="font-size:34px;font-weight:700">🫧 You lost them!</div><div style="font-size:18px">⛽ Full boost, and your riders swim for it</div>`, true); clearTimeout(police.bt); police.bt = setTimeout(() => copBanner(null, false), 2600);
+  }
+  // police gone and back on dry land: everybody out
+  if (!police.wanted && grabbed.length && !car.air && sp < 5 && car.y > LAKE_Y + .3) for (const G of [...grabbed]) if (G.state === 'ride') grabHopOut(G);
+  for (const G of [...grabLoose]) {
+    const c = G.c, g = G.g;
+    if (G.state === 'hopout') {
+      G.t = Math.min(1, G.t + dt / .55); const t = G.t;
+      g.position.lerpVectors(G.from, G.to, t); g.position.y += Math.sin(t * Math.PI) * 1.2;
+      villagerTick(c, dt, false, Math.atan2(G.to.x - G.from.x, G.to.z - G.from.z));
+      if (t >= 1) { G.state = 'flee'; G.t = 0; G.hd = Math.atan2(G.to.x - G.from.x, G.to.z - G.from.z); }
+    } else if (G.state === 'fly') {
+      G.vy -= 18 * dt; g.position.x += G.vx * dt; g.position.y += G.vy * dt; g.position.z += G.vz * dt;
+      villagerTick(c, dt, false, null);
+      const gy = Math.max(groundY(g.position.x, g.position.z), LAKE_Y - .45);
+      if (g.position.y <= gy && G.vy < 0) { g.position.y = gy; G.state = 'flee'; G.t = 0; G.hd = Math.atan2(g.position.x - car.x, g.position.z - car.z); }
+    } else if (G.state === 'flee') {   // run off, then gone in a puff (they turn up on their usual walk later)
+      G.t += dt; const v = 3.2 * dt; g.position.x += Math.sin(G.hd) * v; g.position.z += Math.cos(G.hd) * v; g.position.y = Math.max(groundY(g.position.x, g.position.z), LAKE_Y - .45);   // wading: head and shoulders above the water
+      villagerTick(c, dt, true, G.hd, 1.1);
+      if (G.t > (groundY(g.position.x, g.position.z) < LAKE_Y ? 6 : 2.6)) { poof(g.position.x, g.position.y, g.position.z); g.visible = false; c.setState('idle'); c.setExpressionMode(c.mood);
+        G.p.grab = false; G.p.goneT = 0; G.p.ox = G.p.oz = 0; if (G.p.type) G.p.state = 'walk'; grabLoose.splice(grabLoose.indexOf(G), 1); }
+    }
+  }
+}
+
 const clock=new THREE.Clock();let elapsed=0;
 const camDir=new THREE.Vector3();
 function frame(){
   if(paused){clock.getDelta();updateDayCycle(0);renderer.render(scene,camera);requestAnimationFrame(frame);return;}
   const dt=Math.min(clock.getDelta(),.05);elapsed+=dt;
-  updateCar(dt);updateBunker(dt);updateCity(dt);updateCops(dt);updateHydrants(dt);
+  updateCar(dt);updateBunker(dt);updatePassengers(dt);updateGrabbed(dt);updateCity(dt);updateCops(dt);updateHydrants(dt);
   if(running){playTime+=dt;checkJob(dt);}
   updateFallen(dt);updateOranges(dt);updateFire(dt);updateBeachBalls(dt);
   if(vPop>0){vPop=Math.max(0,vPop-dt*3);const k=1+Math.sin(vPop*Math.PI)*.12;V.model.scale.set(k,1/k*1.0+(k-1)*.4,k);if(!vPop)V.model.scale.set(1,1,1);}
