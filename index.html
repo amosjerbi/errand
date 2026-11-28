@@ -187,7 +187,7 @@
 <div id="grain"></div><div id="vig"></div>
 
 <div id="pauseBack"></div>
-<div id="job" class="hud card" role="dialog" aria-label="Paused"><div class="pauseHead">Sunfield</div><div class="lbl" id="jobLbl">Errand</div><div class="txt" id="jobTxt">—</div><div class="sub" id="jobSub"></div><div id="items"></div><div class="tally"><i class="ph-fill ph-coin"></i> <span id="coins">0</span> · <i class="ph-fill ph-check-circle"></i> <span id="dels">0</span> errands done · <i class="ph-fill ph-timer"></i> <span id="timer">0:00</span></div><div class="tankUp"><div class="row"><span><i class="ph-fill ph-fire"></i> Boost tank upgrade</span><b id="tankCount">3 tanks</b></div><div class="tankBar" id="tankBar"><i></i><i></i><i></i></div><small id="tankTxt">Complete 3 errands = +1 boost tank</small></div><div class="pauseBtns"><button id="resumeBtn"><i class="ph-fill ph-play"></i> Resume</button><button id="freezeBtn" aria-pressed="false"><i class="ph-fill ph-clock"></i> <span id="freezeTxt">Freeze time: Off</span></button><button id="skipTodBtn"><i class="ph-fill ph-sun-horizon"></i> Next time of day</button><button id="lvBtn" style="display:none"></button></div></div>
+<div id="job" class="hud card" role="dialog" aria-label="Paused"><div class="pauseHead">Sunfield</div><div class="lbl" id="jobLbl">Errand</div><div class="txt" id="jobTxt">—</div><div class="sub" id="jobSub"></div><div id="items"></div><div class="tally"><i class="ph-fill ph-coin"></i> <span id="coins">0</span> · <i class="ph-fill ph-check-circle"></i> <span id="dels">0</span> errands done · <i class="ph-fill ph-timer"></i> <span id="timer">0:00</span></div><div class="tankUp"><div class="row"><span><i class="ph-fill ph-fire"></i> Boost tank upgrade</span><b id="tankCount">3 tanks</b></div><div class="tankBar" id="tankBar"><i></i><i></i><i></i></div><small id="tankTxt">Complete 3 errands = +1 boost tank</small></div><div class="pauseBtns"><button id="resumeBtn"><i class="ph-fill ph-play"></i> Resume</button><button id="freezeBtn" aria-pressed="false"><i class="ph-fill ph-clock"></i> <span id="freezeTxt">Freeze time: Off</span></button><button id="skipTodBtn"><i class="ph-fill ph-sun-horizon"></i> Next time of day</button><button id="weatherBtn"><i class="ph-fill ph-cloud-sun"></i> <span id="weatherTxt">Weather: Auto</span></button><button id="trackBtn"><i class="ph-fill ph-music-notes"></i> <span id="trackTxt">Music: Peaceful Journey</span></button><button id="lvBtn" style="display:none"></button></div></div>
 <div id="lvBanner"></div>
 <div id="stats" class="hud"><div class="small" id="tod"><i class="ph-fill ph-sun-horizon"></i> 7:25</div><div class="small" id="flock" title="Sheep in the truck"><svg viewBox="0 0 20 16" aria-hidden="true"><g fill="currentColor"><circle cx="6" cy="7" r="3.4"/><circle cx="10" cy="5.6" r="3.6"/><circle cx="13.6" cy="7.4" r="3.2"/><circle cx="9.4" cy="9.2" r="3.4"/><rect x="6" y="10" width="1.8" height="5" rx=".9"/><rect x="12" y="10" width="1.8" height="5" rx=".9"/></g><ellipse cx="3.4" cy="6.4" rx="2.6" ry="2.2" fill="#3a302b"/><ellipse cx="2.6" cy="4.3" rx="1.2" ry=".7" fill="#3a302b" transform="rotate(-25 2.6 4.3)"/></svg><span id="flockN">0/3</span></div><div class="small" id="pax" title="Passengers in the back"><i class="ph-fill ph-person-simple"></i><span id="paxN">0/2</span></div><div class="small" id="wanted" title="Wanted level"><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i></div><div class="small" id="paxTo"></div></div>
 <div id="compass" class="hud"><div id="arrow"><svg id="arrSvg" width="26" height="26" viewBox="0 0 26 26"><path d="M13 2 L22 22 L13 17 L4 22 Z" fill="#e0703f" stroke="#2b2420" stroke-width="2.4" stroke-linejoin="round"/></svg></div><div id="dist">0 m</div></div>
@@ -217,7 +217,7 @@
     <button class="close" id="howClose" aria-label="Close">×</button>
     <b class="h">How to play</b>
     <p>Pick up loads around the valley and deliver them. Take the bumps gently or your cargo ends up on the road.</p>
-    <p><kbd>W A S D</kbd> / arrows drive · <kbd>Space</kbd> handbrake · <kbd>Shift</kbd> fire boost · <kbd>H</kbd> horn · <kbd>C</kbd> camera · <kbd>T</kbd> time of day · <kbd>R</kbd> back to road · <kbd>Esc</kbd> show / hide your errand</p>
+    <p><kbd>W A S D</kbd> / arrows drive · <kbd>Space</kbd> handbrake · <kbd>Shift</kbd> fire boost · <kbd>H</kbd> horn · <kbd>C</kbd> camera · <kbd>T</kbd> time of day · <kbd>Y</kbd> weather · <kbd>R</kbd> back to road · <kbd>Esc</kbd> show / hide your errand</p>
     <p><i class="ph-fill ph-person-simple"></i> Villagers wait at the stops with a little sign saying where they're going. Roll up slowly and they hop in the back (two at a time), then follow the compass (it turns their colour) to their place: drop them off to get paid and fill every gas tank. Big bumps bounce them out, and they don't like being bowled over!</p>
     <p><i class="ph-fill ph-siren"></i> Everyone else just out for a walk gets scooped into the back if you drive into them, and each one is a wanted star (up to five). Police cars that touch you rescue a rider. Drive into the lake with riders aboard and the police give up, your riders swim for the shore, and your boost fills right up (no riders? dive fully under to lose them).</p>
     <p><i class="ph-fill ph-game-controller"></i> Controller: <kbd>Left stick</kbd> steer · <kbd>RT</kbd>/<kbd>A</kbd> gas · <kbd>LT</kbd>/<kbd>B</kbd> brake · <kbd>X</kbd> handbrake · <kbd>RB</kbd> boost · <kbd>Y</kbd> horn · <kbd>D-pad <i class="ph-fill ph-arrow-up"></i></kbd> camera · <kbd>D-pad <i class="ph-fill ph-arrow-down"></i></kbd> back to road · <kbd>Select</kbd> time of day · <kbd>Start</kbd> pause</p>
@@ -1929,6 +1929,7 @@ addEventListener('keydown',e=>{const k=e.key.toLowerCase();keys[k]=true;
   if(!running){if($('howto').classList.contains('open'))return;if(k==='arrowleft'||k==='a')selectVehicle(vIndex-1);else if(k==='arrowright'||k==='d')selectVehicle(vIndex+1);else if(k==='enter')$('go').click();else if(k==='arrowup'||k==='arrowdown'||k==='w'||k==='s')pickLevel(lvSel===1?2:1);return;}
   if(k==='c')camMode=(camMode+1)%3;
   if(k==='t'&&running)skipTime();
+  if(k==='y'&&running)cycleWeather();
   if(k==='r')resetToRoad();
   if(k==='h')honk();
   if(k==='m'){muted=!muted;if(master)master.gain.value=muted?0:1;music.muted=muted;grassSnd.muted=muted;}
@@ -2091,9 +2092,12 @@ function checkJob(dt){
 
 // ---------- audio ----------
 // background music (plain <audio>, so it also plays when the game is opened as a local file)
-const music=new Audio('../music/peaceful-journey.mp3');music.loop=true;music.volume=0;music.preload='auto';const MUSIC_VOL=.55;
+// the Valley's tracks; pick one in the pause menu (remembered)
+const TRACKS=[{id:'journey',name:'Peaceful Journey',src:'music/peaceful-journey.mp3'},{id:'groove',name:'Town Groove',src:'music/town-groove.mp3'},{id:'bossa',name:'Town Bossa',src:'music/town-bossa.mp3'}];
+let trackI=0;try{const t=localStorage.getItem('eh-valley-track');trackI=Math.max(0,TRACKS.findIndex(x=>x.id===t));}catch(e){}
+const music=new Audio(TRACKS[trackI].src);music.loop=true;music.volume=0;music.preload='auto';const MUSIC_VOL=.55;
 // rustling-grass loop while driving off-road on grass
-const grassSnd=new Audio('../music/245030__kwahmah_02__walking-in-the-grass.wav');grassSnd.loop=true;grassSnd.volume=0;grassSnd.preload='auto';let grassVol=0;
+const grassSnd=new Audio('music/245030__kwahmah_02__walking-in-the-grass.wav');grassSnd.loop=true;grassSnd.volume=0;grassSnd.preload='auto';let grassVol=0;
 function updateGrassSound(dt,on,sp){   // on: 0..1, how much grass is under the truck
   const target=clamp(+on,0,1)*clamp((sp-1.5)/12,0,1)*.7;grassVol+=(target-grassVol)*Math.min(1,dt*6);
   grassSnd.volume=clamp(grassVol,0,1);
@@ -2368,7 +2372,7 @@ function updateDayCycle(dt){
   sun.color.copy(ENV.lc);sun.intensity=ENV.li;hemi.color.copy(ENV.hs);hemi.groundColor.copy(ENV.hg);hemi.intensity=ENV.hi;
   if(BK.ug>.001){const k=BK.ug;sun.intensity*=1-.95*k;hemi.intensity*=1-.82*k;scene.fog.color.lerp(_ugFog,k);scene.fog.near=lerp(scene.fog.near,6,k);scene.fog.far=lerp(scene.fog.far,85,k);}
   sun.position.set(car.x+ENV.dir.x,car.y+ENV.dir.y,car.z+ENV.dir.z);sun.target.position.set(car.x,car.y,car.z);
-  window._cloudMat.color.copy(ENV.cl);
+  window._cloudMat.color.copy(ENV.cl);updateWeather(dt);
   window._lake.material.emissive.set('#1a4a56').multiplyScalar(1-N*.75);
   window._stars.material.opacity=smooth(.35,.9,N)*.9;
   const md=new THREE.Vector3(-.35,.55,.75).normalize();window._moon.position.copy(md).multiplyScalar(1500);window._moon.lookAt(0,0,0);
@@ -2376,14 +2380,54 @@ function updateDayCycle(dt){
   renderer.toneMappingExposure=lerp(1.05,1.15,N);
   if(window._lh){const L=window._lh;L.piv.rotation.y=performance.now()*.0006;L.bm.opacity=smooth(.25,.75,N)*.22;L.glass.emissiveIntensity=.4+N*1.6;}
   // headlights come on at dusk
-  ensureLamps();const on=Math.max(smooth(.12,.5,N),BK.ug);
+  ensureLamps();const on=Math.max(smooth(.12,.5,N),BK.ug,WX.fog*.9,WX.rain*.75);
   lampMat.opacity=on;haloMat.opacity=on*.55;
   const fx=Math.sin(car.h),fz=Math.cos(car.h);
   headL.intensity=on*90;headL.position.set(car.x+fx*1.9,car.y+1.1,car.z+fz*1.9);headL.target.position.set(car.x+fx*22,car.y-1.5,car.z+fz*22);
   { const hr=(6+tod*24)%24,h=Math.floor(hr),m=Math.floor((hr-h)*60/5)*5;  // 0 = 6:00 am, shown in 5-minute steps
     const ic={Morning:'sun-horizon',Day:'sun',Evening:'sun-horizon',Dusk:'cloud-moon',Night:'moon-stars',Dawn:'sun-horizon'}[ENV.n]||'sun';
-    const txt=`<i class="ph-fill ph-${ic}"></i> ${h}:${m<10?'0':''}${m}${todFrozen?' <i class="ph-fill ph-lock-simple" title="Time frozen"></i>':''}`;if(todHTML!==txt){todHTML=txt;$('tod').innerHTML=txt;} }
+    const txt=`<i class="ph-fill ph-${ic}"></i> ${h}:${m<10?'0':''}${m}${todFrozen?' <i class="ph-fill ph-lock-simple" title="Time frozen"></i>':''}${WX.cur==='fog'?' <i class="ph-fill ph-cloud-fog" title="Fog"></i>':WX.cur==='rain'?' <i class="ph-fill ph-cloud-rain" title="Rain"></i>':''}`;if(todHTML!==txt){todHTML=txt;$('tod').innerHTML=txt;} }
   if(ENV.n!==lastTodLabel)lastTodLabel=ENV.n;
+}
+
+// ---------- weather: clear, fog or rain; Auto changes it every minute or two ----------
+const wr=(a,b)=>a+(b-a)*Math.random(),wmod=(a,m)=>((a%m)+m)%m;   // own randomness so the seeded scenery stays put
+const WX={mode:'auto',cur:'clear',fog:0,rain:0,t:wr(60,120)};try{const m=localStorage.getItem('sunfield-weather');if(['auto','clear','fog','rain'].includes(m))WX.mode=m;}catch(e){}
+if(WX.mode!=='auto')WX.cur=WX.mode;
+const WX_FOG=new THREE.Color('#d6dbd8'),WX_RAIN=new THREE.Color('#8e979c'),WX_RAINCL=new THREE.Color('#9aa1a6'),_wxC=new THREE.Color();
+const RAIN_N=5600,RAIN_H=38,RAIN_Y=26,rainP=new Float32Array(RAIN_N*6),rainD=[];
+for(let k=0;k<RAIN_N;k++)rainD.push([wr(-RAIN_H,RAIN_H),wr(-RAIN_Y,RAIN_Y),wr(-RAIN_H,RAIN_H),wr(32,42)]);
+const rainGeo=new THREE.BufferGeometry();rainGeo.setAttribute('position',new THREE.BufferAttribute(rainP,3));
+const rainMesh=new THREE.LineSegments(rainGeo,new THREE.LineBasicMaterial({color:'#f2f7fa',transparent:true,opacity:0,depthWrite:false}));rainMesh.frustumCulled=false;rainMesh.visible=false;scene.add(rainMesh);
+let rainSnd=null;
+function cycleWeather(){const order=['auto','clear','fog','rain'];WX.mode=order[(order.indexOf(WX.mode)+1)%order.length];if(WX.mode!=='auto')WX.cur=WX.mode;else WX.t=wr(60,120);
+  try{localStorage.setItem('sunfield-weather',WX.mode);}catch(e){}syncWeatherBtn();todHTML='';}
+function syncWeatherBtn(){const el=$('weatherTxt');if(el)el.textContent='Weather: '+WX.mode[0].toUpperCase()+WX.mode.slice(1);}
+function updateWeather(dt){
+  if(WX.mode==='auto'&&running&&(WX.t-=dt)<=0){const r=Math.random();const nx=r<.5?'clear':r<.75?'fog':'rain';if(nx!==WX.cur){WX.cur=nx;todHTML='';}WX.t=wr(70,150);}
+  const ease=1-Math.exp(-dt*.35);WX.fog+=((WX.cur==='fog'?1:0)-WX.fog)*ease;WX.rain+=((WX.cur==='rain'?1:0)-WX.rain)*ease;
+  const F=WX.fog,Rn=WX.rain,N=ENV.night,dim=1-N*.82;
+  if(F>.002||Rn>.002){
+    _wxC.copy(WX_FOG).multiplyScalar(dim).lerp(WX_RAIN.clone().multiplyScalar(dim),Rn/(F+Rn));const k=Math.min(1,F+Rn);
+    scene.fog.color.lerp(_wxC,k*lerp(.85,1,F/(F+Rn)));scene.fog.near=lerp(scene.fog.near,lerp(45,1,F/(F+Rn)),k);scene.fog.far=lerp(scene.fog.far,lerp(260,38,F/(F+Rn)),k);   // fog: about 35 m of sight
+    const u=window._sky.material.uniforms,sk=k*lerp(.9,1,F/(F+Rn));u.top.value.lerp(_wxC,sk);u.mid.value.lerp(_wxC,sk);u.bot.value.lerp(_wxC,sk);
+    window._cloudMat.color.lerp(WX_RAINCL.clone().multiplyScalar(dim),Rn*.8);
+    sun.intensity*=Math.max(.08,(1-.7*F)*(1-.88*Rn));hemi.intensity*=1-.15*F+.3*Rn;}   // overcast: little direct sun, more even sky light
+  // wet road: fades in with the rain, dries off a bit slower than that
+  if(window._wet){const W=window._wet;WX.wet=(WX.wet||0)+(Rn-(WX.wet||0))*(1-Math.exp(-dt*(Rn>(WX.wet||0)?.5:.12)));const w=WX.wet;
+    W.m.visible=w>.01;W.wm.opacity=w*.55;for(const[m,c,f] of W.mats)m.color.copy(c).multiplyScalar(1-(1-f)*w);}
+  // rain streaks round the camera
+  const uw=camera.position.y<LAKE_Y-.05;rainMesh.visible=Rn>.02&&!uw&&BK.ug<.5;rainMesh.material.opacity=Rn*.95*(1-N*.3);
+  if(rainMesh.visible){const cx=camera.position.x,cy=camera.position.y,cz=camera.position.z,wind=3;
+    for(let k=0;k<RAIN_N;k++){const d=rainD[k];d[1]-=d[3]*dt;d[0]+=wind*dt;if(d[1]<-RAIN_Y)d[1]+=RAIN_Y*2;
+      const x=cx+wmod(d[0]-cx+RAIN_H,RAIN_H*2)-RAIN_H,z=cz+wmod(d[2]-cz+RAIN_H,RAIN_H*2)-RAIN_H,y=cy+d[1],i=k*6;
+      rainP[i]=x;rainP[i+1]=y;rainP[i+2]=z;rainP[i+3]=x-wind*.06;rainP[i+4]=y+2.1;rainP[i+5]=z;}
+    rainGeo.attributes.position.needsUpdate=true;}
+  // rain sound: looping filtered noise
+  if(ac&&!rainSnd&&Rn>.01){try{const buf=ac.createBuffer(1,ac.sampleRate*2,ac.sampleRate),d=buf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;
+    const src=ac.createBufferSource();src.buffer=buf;src.loop=true;const hp=ac.createBiquadFilter();hp.type='highpass';hp.frequency.value=900;const lp=ac.createBiquadFilter();lp.type='lowpass';lp.frequency.value=6500;
+    const g=ac.createGain();g.gain.value=0;src.connect(hp).connect(lp).connect(g).connect(master);src.start();rainSnd=g;}catch(e){}}
+  if(rainSnd)rainSnd.gain.setTargetAtTime(Rn*.035*(uw?.3:1),ac.currentTime,.3);
 }
 
 // ---------- loop ----------
@@ -2852,6 +2896,12 @@ function syncFreeze(){$('freezeBtn').setAttribute('aria-pressed',todFrozen);$('f
 syncFreeze();
 $('freezeBtn').addEventListener('click',()=>{todFrozen=!todFrozen;try{localStorage.setItem('eh-freeze-time',todFrozen?'1':'0');}catch(e){}syncFreeze();});
 $('skipTodBtn').addEventListener('click',()=>{skipTime();todHTML='';});
+$('weatherBtn').addEventListener('click',cycleWeather);syncWeatherBtn();
+function syncTrackBtn(){$('trackTxt').textContent='Music: '+TRACKS[trackI].name;}
+$('trackBtn').addEventListener('click',()=>{trackI=(trackI+1)%TRACKS.length;try{localStorage.setItem('eh-valley-track',TRACKS[trackI].id);}catch(e){}syncTrackBtn();
+  music.src=TRACKS[trackI].src;music.currentTime=0;
+  if(!musicOff){music.muted=muted;music.volume=MUSIC_VOL;music.play().catch(()=>{});}});   // a preview, even while paused
+syncTrackBtn();
 $('resumeBtn').addEventListener('click',()=>setPaused(false));
 $('pauseBack').addEventListener('click',()=>setPaused(false));
 $('pauseBtn').addEventListener('click',()=>setPaused(!paused));
