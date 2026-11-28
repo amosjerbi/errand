@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pink-Haired Fisher — Game-Ready 3D Character Rig</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dialkit@2.1.0/dist/vanilla/styles.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: #cde7f5;
+      user-select: none;
+    }
+
+    #canvas-container {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      outline: none;
+    }
+
+    .glass-hud {
+      background: rgba(255, 252, 247, 0.86);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      box-shadow:
+        0 12px 32px -8px rgba(45, 28, 18, 0.16),
+        0 2px 8px -2px rgba(45, 28, 18, 0.08);
+    }
+
+    .kbd-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 1px 5px;
+      border-radius: 5px;
+      background: rgba(0, 0, 0, 0.08);
+      border-bottom: 1.5px solid rgba(0, 0, 0, 0.16);
+      line-height: 1.2;
+    }
+  </style>
+
+  <!-- ES Module Import Map for Three.js & Addons -->
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.169.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.169.0/examples/jsm/"
+      }
+    }
+  </script>
+</head>
+<body>
+  <!-- Full-Viewport Three.js Canvas -->
+  <div id="canvas-container"></div>
+
+  <!-- Top Bar: Title, Mode Switcher & Quick Toggles -->
+  <!-- stacked on the left: the DevKit panel owns the top-right corner -->
+  <div class="fixed top-3 left-3 z-20 flex flex-col items-start gap-2 pointer-events-none" style="max-width: calc(100vw - 24px)">
+    <!-- Left Identity & State Readout -->
+    <div class="glass-hud rounded-2xl px-3.5 py-2.5 pointer-events-auto flex items-center gap-3">
+      <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-[#ff4f62] to-[#ff7b89] flex items-center justify-center text-white font-extrabold text-sm shadow-sm">
+        3D
+      </div>
+      <div>
+        <div class="flex items-center gap-2">
+          <h1 class="text-xs sm:text-sm font-extrabold tracking-tight text-stone-800">
+            FisherCharacterController
+          </h1>
+          <span id="state-pill" class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300/70">
+            IDLE
+          </span>
+        </div>
+        <p class="text-[11px] text-stone-500 mt-0.5 hidden sm:block">
+          <span class="font-semibold text-stone-700">WASD/Arrows</span> Move ·
+          <span class="font-semibold text-stone-700">Space</span> Jump ·
+          <span class="font-semibold text-stone-700">Shift</span> Sprint ·
+          <span class="font-semibold text-stone-700">Ctrl/C</span> Slide ·
+          <span class="font-semibold text-stone-700">Q/F</span> Front Flip ·
+          <span class="font-semibold text-stone-700">E</span> Back Flip ·
+          <span class="font-semibold text-stone-700">R</span> Power Flex
+        </p>
+      </div>
+    </div>
+
+    <!-- Right Toggles: Mode, Expression, Speed -->
+    <div class="glass-hud rounded-2xl p-1.5 pointer-events-auto flex flex-wrap items-center gap-1.5">
+      <!-- Playable vs Showcase Mode -->
+      <div class="flex bg-black/[0.05] rounded-xl p-0.5">
+        <button id="btn-mode-play" type="button" class="px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition-all cursor-pointer bg-[#ff4f62] text-white shadow-sm">
+          Playable Dock
+        </button>
+        <button id="btn-mode-showcase" type="button" class="px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition-all cursor-pointer text-stone-700 hover:bg-white/60">
+          Showcase
+        </button>
+      </div>
+
+      <!-- Expression Mode Toggle -->
+      <button id="btn-toggle-expr" type="button" class="px-2.5 py-1.5 rounded-xl text-[11px] font-bold transition-all cursor-pointer bg-amber-400 text-stone-900 shadow-sm">
+        Face: Auto
+      </button>
+
+      <!-- Animation Speed Toggle -->
+      <button id="btn-toggle-speed" type="button" class="px-2.5 py-1.5 rounded-xl text-[11px] font-bold transition-all cursor-pointer bg-white/80 text-stone-700 hover:bg-white border border-stone-200/70">
+        1.0x
+      </button>
+
+      <!-- Pixel Filter Toggle -->
+      <button id="btn-toggle-pixel" type="button" class="px-2.5 py-1.5 rounded-xl text-[11px] font-bold transition-all cursor-pointer bg-white/80 text-stone-700 hover:bg-white border border-stone-200/70">
+        Pixel: Off <span class="kbd-badge ml-0.5">P</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Bottom Floating Game Action Bar -->
+  <div class="fixed bottom-3 left-1/2 -translate-x-1/2 z-20 w-[96%] max-w-4xl pointer-events-auto">
+    <div class="glass-hud rounded-3xl p-2 sm:p-2.5">
+      <div class="grid grid-cols-4 sm:grid-cols-7 gap-1.5">
+        <button id="act-idle" type="button" class="act-btn flex flex-col items-center justify-center rounded-2xl py-2 px-1.5 text-xs font-bold transition-all cursor-pointer bg-stone-800 text-white shadow-sm">
+          <span>Idle</span>
+          <span class="kbd-badge mt-0.5 text-[9px] opacity-75">Stop</span>
+        </button>
+
+        <button id="act-run" type="button" class="act-btn flex flex-col items-center justify-center rounded-2xl py-2 px-1.5 text-xs font-bold transition-all cursor-pointer bg-white/75 text-stone-800 hover:bg-white">
+          <span>Run</span>
+          <span class="kbd-badge mt-0.5 text-[9px]">WASD</span>
+        </button>
+
+        <button id="act-jump" type="button" class="act-btn flex flex-col items-center justify-center rounded-2xl py-2 px-1.5 text-xs font-bold transition-all cursor-pointer bg-white/75 text-stone-800 hover:bg-white">
+          <span>Jump</span>
+          <span class="kbd-badge mt-0.5 text-[9px]">Space</span>
+        </button>
+
+        <button id="act-slide" type="button" class="act-btn flex flex-col items-center justify-center rounded-2xl py-2 px-1.5 text-xs font-bold transition-all cursor-pointer bg-white/75 text-stone-800 hover:bg-white">
+          <span>Slide</span>
+          <span class="kbd-badge mt-0.5 text-[9px]">Ctrl / C</span>
+        </button>
+
+        <button id="act-frontflip" type="button" class="act-btn flex flex-col items-center justify-center rounded-2xl py-2 px-1.5 text-xs font-bold transition-all cursor-pointer bg-white/75 text-stone-800 hover:bg-white">
+          <span>Front Flip</span>
+          <span class="kbd-badge mt-0.5 text-[9px]">Q / F</span>
+        </button>
+
+        <button id="act-backflip" type="button" class="act-btn flex flex-col items-center justify-center rounded-2xl py-2 px-1.5 text-xs font-bold transition-all cursor-pointer bg-white/75 text-stone-800 hover:bg-white">
+          <span>Back Flip</span>
+          <span class="kbd-badge mt-0.5 text-[9px]">E</span>
+        </button>
+
+        <button id="act-flex" type="button" class="act-btn col-span-2 sm:col-span-1 flex flex-col items-center justify-center rounded-2xl py-2 px-1.5 text-xs font-bold transition-all cursor-pointer bg-white/75 text-stone-800 hover:bg-white">
+          <span>Power Flex</span>
+          <span class="kbd-badge mt-0.5 text-[9px]">R</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Three.js Application & Game-Ready FisherCharacterController -->
+  <script src="../fisher-kit.js"></script>
+  <script type="module">
+    import * as THREE from 'three';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+    // the character lives in fisher-kit.js (shared with the game levels)
+    const {
+      createVinylToonGradientMap, createDockPlankTexture, FACE_PRESETS, FACE_NAMES, col,
+      FisherCharacterController, createFisherCharacter, DEVKIT, devkitDefaults, rollVillager
+    } = window.defineFisherKit(THREE);
+    window.FisherCharacterController = FisherCharacterController;
+    window.createFisherCharacter = createFisherCharacter;
+
+    // =========================================================================
+    // 3. THREE.JS SCENE, SUNLIT DOCK OBSTACLE COURSE & CAMERA RIG
+    // =========================================================================
+
+    const container = document.getElementById('canvas-container');
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color('#CBE8F6');
+    scene.fog = new THREE.Fog('#CBE8F6', 18, 44);
+
+    const renderer = new THREE.WebGLRenderer({
+      antialias: true,
+      stencil: true,               // eyes use the stencil buffer to keep pupils inside the whites
+      preserveDrawingBuffer: true, // lets DialKit capture version thumbnails
+      powerPreference: 'high-performance'
+    });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.05;
+    container.appendChild(renderer.domElement);
+
+    const camera = new THREE.PerspectiveCamera(
+      40,
+      container.clientWidth / container.clientHeight,
+      0.1,
+      100
+    );
+    camera.position.set(0, 3.2, 6.4);
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.07;
+    controls.target.set(0, 1.1, 0);
+    controls.minDistance = 2.0;
+    controls.maxDistance = 15.0;
+    controls.maxPolarAngle = Math.PI * 0.48;
+
+    // Warm sunlit sky + directional shadow caster
+    const hemiLight = new THREE.HemisphereLight('#E6F6FF', '#C49A6C', 0.95);
+    hemiLight.position.set(0, 12, 0);
+    scene.add(hemiLight);
+
+    const sunLight = new THREE.DirectionalLight('#FFF5DC', 1.95);
+    sunLight.position.set(6.5, 11.0, 7.5);
+    sunLight.castShadow = true;
+    sunLight.shadow.mapSize.width = 2048;
+    sunLight.shadow.mapSize.height = 2048;
+    sunLight.shadow.camera.near = 1;
+    sunLight.shadow.camera.far = 35;
+    const shadowBound = 11.5;
+    sunLight.shadow.camera.left = -shadowBound;
+    sunLight.shadow.camera.right = shadowBound;
+    sunLight.shadow.camera.top = shadowBound;
+    sunLight.shadow.camera.bottom = -shadowBound;
+    sunLight.shadow.bias = -0.0005;
+    scene.add(sunLight);
+
+    const rimLight = new THREE.DirectionalLight('#FFD9C2', 0.5);
+    rimLight.position.set(-6, 4, -5);
+    scene.add(rimLight);
+
+    // Stylized Wooden Pier / Dock Platform
+    const toonGrad = createVinylToonGradientMap();
+    const dockSize = 20;
+    const dockDeck = new THREE.Mesh(
+      new THREE.BoxGeometry(dockSize, 0.5, dockSize),
+      new THREE.MeshStandardMaterial({
+        map: createDockPlankTexture(),
+        roughness: 0.82,
+        metalness: 0.04
+      })
+    );
+    dockDeck.position.y = -0.25;
+    dockDeck.receiveShadow = true;
+    scene.add(dockDeck);
+
+    // Sparkling turquoise ocean surrounding the dock
+    const oceanMesh = new THREE.Mesh(
+      new THREE.PlaneGeometry(140, 140),
+      new THREE.MeshToonMaterial({ color: '#45B3E0', gradientMap: toonGrad })
+    );
+    oceanMesh.rotation.x = -Math.PI / 2;
+    oceanMesh.position.y = -0.52;
+    scene.add(oceanMesh);
+
+    // Dock Perimeter Pilings & Test Parkour Obstacles (jumpable crates & slide-under beam)
+    const woodPostMat = new THREE.MeshToonMaterial({ color: '#8E633B', gradientMap: toonGrad });
+    const ropeMat = new THREE.MeshToonMaterial({ color: '#E6C280', gradientMap: toonGrad });
+
+    const cornerOffsets = [-9.4, 9.4];
+    cornerOffsets.forEach((cx) => {
+      cornerOffsets.forEach((cz) => {
+        const post = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.24, 0.28, 1.7, 16),
+          woodPostMat
+        );
+        post.position.set(cx, 0.55, cz);
+        post.castShadow = true;
+        post.receiveShadow = true;
+        scene.add(post);
+      });
+    });
+
+    // Obstacles & props (toggled together from the DevKit's Scene folder)
+    const props = new THREE.Group();
+    scene.add(props);
+
+    // Jumpable Wooden Crates on the right side of the dock
+    const crateMat = new THREE.MeshToonMaterial({ color: '#D4944E', gradientMap: toonGrad });
+    const cratePositions = [
+      [3.4, 0.35, -2.2, 0.7],
+      [4.3, 0.50, -2.2, 1.0],
+      [-3.8, 0.35, 2.5, 0.7]
+    ];
+    cratePositions.forEach(([x, y, z, size]) => {
+      const crate = new THREE.Mesh(new THREE.BoxGeometry(size, size, size), crateMat);
+      crate.position.set(x, y, z);
+      crate.castShadow = true;
+      crate.receiveShadow = true;
+      props.add(crate);
+    });
+
+    // Slide-Under High Overhead Beam Gate on the left side of the dock
+    const gateGroup = new THREE.Group();
+    gateGroup.position.set(-3.6, 0, -2.8);
+    props.add(gateGroup);
+
+    [-1.1, 1.1].forEach((gx) => {
+      const pillar = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.16, 1.85, 14), woodPostMat);
+      pillar.position.set(gx, 0.92, 0);
+      pillar.castShadow = true;
+      gateGroup.add(pillar);
+    });
+    const topBeam = new THREE.Mesh(new THREE.BoxGeometry(2.5, 0.24, 0.24), ropeMat);
+    topBeam.position.set(0, 1.15, 0);
+    topBeam.castShadow = true;
+    gateGroup.add(topBeam);
+
+    // Cute Bucket of Blue Fish (from Reference Image 2) near the front-right corner
+    const bucketGroup = new THREE.Group();
+    bucketGroup.position.set(2.4, 0, 2.4);
+    props.add(bucketGroup);
+
+    const bucketBody = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.26, 0.20, 0.38, 22),
+      new THREE.MeshToonMaterial({ color: '#ECEFF2', gradientMap: toonGrad })
+    );
+    bucketBody.position.y = 0.19;
+    bucketBody.castShadow = true;
+    bucketGroup.add(bucketBody);
+
+    const bucketRim = new THREE.Mesh(
+      new THREE.TorusGeometry(0.26, 0.026, 12, 26),
+      new THREE.MeshToonMaterial({ color: '#E24A3B', gradientMap: toonGrad })
+    );
+    bucketRim.rotation.x = Math.PI / 2;
+    bucketRim.position.y = 0.38;
+    bucketGroup.add(bucketRim);
+
+    const fishMat = new THREE.MeshToonMaterial({ color: '#3996D8', gradientMap: toonGrad });
+    for (let f = 0; f < 4; f++) {
+      const fish = new THREE.Mesh(new THREE.SphereGeometry(0.085, 14, 12), fishMat);
+      fish.scale.set(1.5, 0.85, 0.75);
+      fish.position.set((f % 2) * 0.1 - 0.05, 0.39 + f * 0.02, Math.floor(f / 2) * 0.09 - 0.04);
+      fish.rotation.set(0.2, f * 0.8, 0.35);
+      bucketGroup.add(fish);
+    }
+
+    // =========================================================================
+    // 4. INSTANTIATE CHARACTER RIG & WIRE KEYBOARD + HUD CONTROLS
+    // =========================================================================
+
+    const fisher = createFisherCharacter({
+      expressionMode: 'auto',
+      speedMultiplier: 1.0
+    });
+    scene.add(fisher.group);
+    window.CharacterRig = fisher; // Exposed globally for immediate console/game testing
+
+    // =========================================================================
+    // PIXEL FILTER: draws the character (or the whole scene) into a small render
+    // target and scales it up with nearest-neighbour sampling, for chunky pixels.
+    // The character lives on layer 1 so it can be drawn separately from the world.
+    // =========================================================================
+    const CHAR_LAYER = 1;
+    fisher.group.traverse((o) => o.layers.set(CHAR_LAYER));
+    camera.layers.enableAll();
+    for (const light of [hemiLight, sunLight, rimLight]) light.layers.enableAll(); // light both layers
+    sunLight.shadow.camera.layers.enableAll(); // the character keeps casting its shadow
+    renderer.shadowMap.autoUpdate = false; // several passes per frame; update shadows once
+
+    const pixel = {
+      enabled: false, scope: 'character', size: 2, colors: 20, outline: false, outlineWidth: 1,
+      outlineColor: new THREE.Color('#24161c'), faceted: true
+    };
+    const pixelRT = new THREE.WebGLRenderTarget(1, 1, {
+      type: THREE.HalfFloatType,
+      minFilter: THREE.NearestFilter,
+      magFilter: THREE.NearestFilter,
+      depthBuffer: true
+    });
+    const depthOnly = new THREE.MeshBasicMaterial({ colorWrite: false }); // world occludes the character
+    const pixelQuadMat = new THREE.ShaderMaterial({
+      uniforms: {
+        tDiffuse: { value: pixelRT.texture },
+        texel: { value: new THREE.Vector2(1, 1) },
+        levels: { value: 0 },
+        outline: { value: 1 },
+        outlineColor: { value: pixel.outlineColor },
+        outlineWidth: { value: 1 },
+        opaque: { value: 0 }
+      },
+      vertexShader: /* glsl */ `
+        varying vec2 vUv;
+        void main() { vUv = uv; gl_Position = vec4(position.xy, 0.0, 1.0); }`,
+      fragmentShader: /* glsl */ `
+        uniform sampler2D tDiffuse;
+        uniform vec2 texel;
+        uniform float levels, outline, opaque, outlineWidth;
+        uniform vec3 outlineColor;
+        varying vec2 vUv;
+        void main() {
+          vec4 c = texture2D(tDiffuse, vUv);
+          // silhouette outline: an empty pixel within outlineWidth (low-res) pixels of a filled one
+          if (outline > 0.5 && opaque < 0.5 && c.a < 0.5) {
+            float n = 0.0;
+            for (int i = 1; i <= 4; i++) {
+              if (float(i) > outlineWidth) break;
+              float d = float(i);
+              n = max(n, texture2D(tDiffuse, vUv + vec2(texel.x * d, 0.0)).a);
+              n = max(n, texture2D(tDiffuse, vUv - vec2(texel.x * d, 0.0)).a);
+              n = max(n, texture2D(tDiffuse, vUv + vec2(0.0, texel.y * d)).a);
+              n = max(n, texture2D(tDiffuse, vUv - vec2(0.0, texel.y * d)).a);
+              if (i < 4 && float(i + 1) > outlineWidth) break;
+              // diagonals keep thick outlines rounded instead of diamond-shaped
+              n = max(n, texture2D(tDiffuse, vUv + texel * d * 0.7071).a);
+              n = max(n, texture2D(tDiffuse, vUv - texel * d * 0.7071).a);
+              n = max(n, texture2D(tDiffuse, vUv + vec2(texel.x, -texel.y) * d * 0.7071).a);
+              n = max(n, texture2D(tDiffuse, vUv + vec2(-texel.x, texel.y) * d * 0.7071).a);
+            }
+            if (n > 0.5) c = vec4(outlineColor, 1.0);
+          }
+          if (opaque < 0.5 && c.a < 0.01) discard;
+          gl_FragColor = vec4(c.rgb, opaque > 0.5 ? 1.0 : c.a);
+          #include <tonemapping_fragment>
+          #include <colorspace_fragment>
+          // optional colour reduction (per channel) for a limited-palette look
+          if (levels > 0.5) gl_FragColor.rgb = floor(gl_FragColor.rgb * levels + 0.5) / levels;
+        }`,
+      transparent: true,
+      depthTest: false,
+      depthWrite: false
+    });
+    const pixelQuad = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), pixelQuadMat);
+    pixelQuad.frustumCulled = false;
+    const quadScene = new THREE.Scene();
+    quadScene.add(pixelQuad);
+    const quadCam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+    const _buf = new THREE.Vector2();
+
+    function setFaceted(on) {
+      for (const m of Object.values(fisher.mats)) {
+        if (m.isMeshToonMaterial && m.flatShading !== on) {
+          m.flatShading = on;
+          m.needsUpdate = true;
+        }
+      }
+    }
+
+    function renderFrame() {
+      renderer.shadowMap.needsUpdate = true;
+      if (!pixel.enabled) {
+        camera.layers.enableAll();
+        renderer.render(scene, camera);
+        return;
+      }
+      renderer.getDrawingBufferSize(_buf);
+      const w = Math.max(1, Math.ceil(_buf.x / (pixel.size * renderer.getPixelRatio())));
+      const h = Math.max(1, Math.ceil(_buf.y / (pixel.size * renderer.getPixelRatio())));
+      if (pixelRT.width !== w || pixelRT.height !== h) pixelRT.setSize(w, h);
+      pixelQuadMat.uniforms.texel.value.set(1 / w, 1 / h);
+      pixelQuadMat.uniforms.levels.value = pixel.colors;
+      pixelQuadMat.uniforms.outline.value = pixel.outline ? 1 : 0;
+      pixelQuadMat.uniforms.outlineWidth.value = pixel.outlineWidth;
+
+      const whole = pixel.scope === 'scene';
+      const bg = scene.background;
+      const prevClear = renderer.getClearColor(new THREE.Color());
+      const prevAlpha = renderer.getClearAlpha();
+
+      if (!whole) {
+        // 1. the world at full resolution, without the character
+        camera.layers.set(0);
+        renderer.setRenderTarget(null);
+        renderer.render(scene, camera);
+        renderer.shadowMap.needsUpdate = false;
+      }
+
+      // 2. low-res pass: world depth (to occlude) + the character, on a transparent background
+      renderer.setRenderTarget(pixelRT);
+      if (whole) {
+        camera.layers.enableAll();
+        renderer.render(scene, camera);
+      } else {
+        scene.background = null;
+        renderer.setClearColor(0x000000, 0);
+        renderer.clear();
+        renderer.autoClear = false;
+        camera.layers.set(0);
+        scene.overrideMaterial = depthOnly;
+        renderer.render(scene, camera);
+        scene.overrideMaterial = null;
+        camera.layers.set(CHAR_LAYER);
+        renderer.render(scene, camera);
+        renderer.autoClear = true;
+        scene.background = bg;
+        renderer.setClearColor(prevClear, prevAlpha);
+      }
+
+      // 3. scale it up onto the screen with hard pixels
+      renderer.setRenderTarget(null);
+      pixelQuadMat.uniforms.opaque.value = whole ? 1 : 0;
+      renderer.autoClear = whole;
+      renderer.render(quadScene, quadCam);
+      renderer.autoClear = true;
+      camera.layers.enableAll();
+    }
+
+    let playableMode = true;
+    const keysDown = new Set();
+
+    // Keyboard Controls
+    window.addEventListener('keydown', (e) => {
+      // keys typed into the DevKit panel stay there
+      if (e.target instanceof Element && e.target.closest('.dialkit-root, input, textarea, select, [contenteditable]')) return;
+      const code = e.code;
+      keysDown.add(code);
+
+      if (code === 'Space') {
+        e.preventDefault();
+        fisher.triggerAction('jump');
+      } else if (code === 'KeyC' || code === 'ControlLeft' || code === 'ControlRight') {
+        e.preventDefault();
+        fisher.triggerAction('slide');
+      } else if (code === 'KeyQ' || code === 'KeyF') {
+        e.preventDefault();
+        fisher.triggerAction('frontflip');
+      } else if (code === 'KeyE') {
+        e.preventDefault();
+        fisher.triggerAction('backflip');
+      } else if (code === 'KeyR') {
+        e.preventDefault();
+        fisher.setState('flex');
+      } else if (code === 'KeyP') {
+        e.preventDefault();
+        togglePixel();
+      }
+    });
+
+    window.addEventListener('keyup', (e) => {
+      keysDown.delete(e.code);
+    });
+    window.addEventListener('blur', () => keysDown.clear()); // don't keep sprinting after alt-tab
+
+    // HUD Buttons & Toggles
+    const statePill = document.getElementById('state-pill');
+    const btnModePlay = document.getElementById('btn-mode-play');
+    const btnModeShowcase = document.getElementById('btn-mode-showcase');
+    const btnToggleExpr = document.getElementById('btn-toggle-expr');
+    const btnToggleSpeed = document.getElementById('btn-toggle-speed');
+    const btnTogglePixel = document.getElementById('btn-toggle-pixel');
+
+    const actionButtons = {
+      idle: document.getElementById('act-idle'),
+      run: document.getElementById('act-run'),
+      jump: document.getElementById('act-jump'),
+      slide: document.getElementById('act-slide'),
+      frontflip: document.getElementById('act-frontflip'),
+      backflip: document.getElementById('act-backflip'),
+      flex: document.getElementById('act-flex')
+    };
+
+    Object.entries(actionButtons).forEach(([actionName, btn]) => {
+      btn.addEventListener('click', () => {
+        if (actionName === 'idle') {
+          fisher.forceContinuousRun = false;
+          fisher.setState('idle');
+        } else if (actionName === 'run') {
+          fisher.forceContinuousRun = !playableMode;
+          fisher.setState('run');
+        } else if (actionName === 'flex') {
+          fisher.forceContinuousRun = false;
+          fisher.setState('flex');
+        } else {
+          fisher.triggerAction(actionName);
+        }
+      });
+    });
+
+    btnModePlay.addEventListener('click', () => {
+      playableMode = true;
+      fisher.forceContinuousRun = false;
+      btnModePlay.className = 'px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition-all cursor-pointer bg-[#ff4f62] text-white shadow-sm';
+      btnModeShowcase.className = 'px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition-all cursor-pointer text-stone-700 hover:bg-white/60';
+    });
+
+    btnModeShowcase.addEventListener('click', () => {
+      playableMode = false;
+      btnModeShowcase.className = 'px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition-all cursor-pointer bg-[#ff4f62] text-white shadow-sm';
+      btnModePlay.className = 'px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition-all cursor-pointer text-stone-700 hover:bg-white/60';
+      controls.target.set(0, 1.15, 0);
+      camera.position.set(1.6, 1.85, 4.4);
+    });
+
+    // =========================================================================
+    // DEVKIT (DialKit panel): facial expressions + every character property.
+    // Slider tuples are [default, min, max, step]. Values persist in this browser.
+    // =========================================================================
+
+    function applyDevkit(D) {
+      fisher.applyDevkit(D);
+      const S = D.scene;
+      scene.background.copy(col(S.background));
+      scene.fog = S.fog ? new THREE.Fog(scene.background.clone(), 18, 44) : null;
+      oceanMesh.material.color.copy(col(S.ocean));
+      props.visible = S.props;
+      const X = D.pixel;
+      Object.assign(pixel, { enabled: X.enabled, scope: X.scope, size: X.size, colors: X.colors, outline: X.outline, outlineWidth: X.outlineWidth, faceted: X.faceted });
+      pixel.outlineColor.copy(col(X.outlineColor));
+      setFaceted(X.faceted);
+      btnTogglePixel.firstChild.textContent = `Pixel: ${X.enabled ? 'On' : 'Off'} `;
+      btnTogglePixel.className = 'px-2.5 py-1.5 rounded-xl text-[11px] font-bold transition-all cursor-pointer ' +
+        (X.enabled ? 'bg-stone-800 text-white shadow-sm' : 'bg-white/80 text-stone-700 hover:bg-white border border-stone-200/70');
+      btnToggleExpr.textContent = `Face: ${D.expression.mode[0].toUpperCase()}${D.expression.mode.slice(1)}`;
+      btnToggleSpeed.textContent = `${fisher.options.speedMultiplier.toFixed(2).replace(/0$/, '')}x`;
+    }
+
+    let devkit = null;
+    applyDevkit(devkitDefaults(DEVKIT));
+    try {
+      const { createDialKit, createDialRoot } = await import('https://cdn.jsdelivr.net/npm/dialkit@2.1.0/dist/vanilla/index.js');
+      createDialRoot({ position: 'top-right', theme: 'light' });
+      const statePillNote = (text) => { const el = document.getElementById('state-pill'); if (!el) return; const old = el.textContent; el.textContent = text; clearTimeout(statePillNote.t); statePillNote.t = setTimeout(() => (el.textContent = old), 1600); };
+      devkit = createDialKit('Fisher DevKit', DEVKIT, {
+        id: 'fisher-devkit-v10', // bumped so browsers holding the old saved values pick up these defaults
+        persist: true,
+        onAction(path) {
+          if (path === 'expression.toCustom') {
+            const { gazeX, gazeY, ...face } = fisher._targetFace();
+            devkit.setValues({ expression: { mode: 'custom', custom: face } });
+          } else if (path === 'npc.kid' || path === 'npc.adult') {
+            // roll a random villager look into the panel (tweak it from there)
+            const v = devkit.getValues();
+            const look = rollVillager(v, { adult: path === 'npc.adult', scale: 1 });
+            devkit.setValues(v);
+            statePillNote(`${look.name} · ${look.adult ? 'adult' : 'kid'}`);
+          } else if (path === 'npc.fisher') {
+            devkit.setValues(devkitDefaults(DEVKIT));
+          } else if (path.startsWith('actions.')) {
+            const act = path.slice(8);
+            fisher.forceContinuousRun = false;
+            if (act === 'idle' || act === 'flex' || act === 'sit') fisher.setState(act);
+            else fisher.triggerAction(act);
+          }
+        }
+      });
+      // batch panel changes to one apply per frame
+      let pending = null;
+      devkit.subscribe((v) => {
+        const first = pending === null;
+        pending = v;
+        if (first) requestAnimationFrame(() => { const d = pending; pending = null; applyDevkit(d); });
+      });
+    } catch (err) {
+      console.warn('DialKit did not load; running the fisher with default DevKit values.', err);
+    }
+    window.FisherDevKit = { config: DEVKIT, presets: FACE_PRESETS, get kit() { return devkit; } };
+
+    // HUD buttons drive the same values as the panel
+    const exprCycle = ['auto', ...FACE_NAMES, 'custom'];
+    btnToggleExpr.addEventListener('click', () => {
+      const next = exprCycle[(exprCycle.indexOf(fisher.options.expressionMode) + 1) % exprCycle.length];
+      if (devkit) devkit.setValue('expression.mode', next);
+      else {
+        fisher.setExpressionMode(next);
+        btnToggleExpr.textContent = `Face: ${next[0].toUpperCase()}${next.slice(1)}`;
+      }
+    });
+
+    function togglePixel() {
+      if (devkit) devkit.setValue('pixel.enabled', !pixel.enabled);
+      else applyDevkit({ ...devkitDefaults(DEVKIT), pixel: { ...devkitDefaults(DEVKIT).pixel, enabled: !pixel.enabled } });
+    }
+    btnTogglePixel.addEventListener('click', togglePixel);
+
+    const speeds = [1.0, 0.5, 1.5];
+    btnToggleSpeed.addEventListener('click', () => {
+      const idx = speeds.indexOf(fisher.options.speedMultiplier);
+      const next = speeds[(idx + 1) % speeds.length];
+      if (devkit) devkit.setValue('motion.animSpeed', next);
+      else {
+        fisher.setSpeedMultiplier(next);
+        btnToggleSpeed.textContent = `${next.toFixed(1)}x`;
+      }
+    });
+
+    function syncHudActiveState() {
+      statePill.textContent = fisher.state.toUpperCase();
+      Object.entries(actionButtons).forEach(([key, btn]) => {
+        const isActive = fisher.state === key;
+        btn.className =
+          'act-btn ' +
+          (key === 'flex' ? 'col-span-2 sm:col-span-1 ' : '') +
+          'flex flex-col items-center justify-center rounded-2xl py-2 px-1.5 text-xs font-bold transition-all cursor-pointer ' +
+          (isActive
+            ? 'bg-stone-800 text-white shadow-sm scale-[1.02]'
+            : 'bg-white/75 text-stone-800 hover:bg-white');
+      });
+    }
+
+    // =========================================================================
+    // 5. MAIN GAME LOOP & CAMERA FOLLOW
+    // =========================================================================
+
+    const clock = new THREE.Clock();
+    const moveVec = new THREE.Vector3();
+    const camForward = new THREE.Vector3();
+    const camRight = new THREE.Vector3();
+    const prevCharPos = new THREE.Vector3();
+
+    function computeCameraRelativeInput() {
+      fisher.sprinting = keysDown.has('ShiftLeft') || keysDown.has('ShiftRight');
+      let forwardInput = 0;
+      let rightInput = 0;
+
+      if (keysDown.has('KeyW') || keysDown.has('ArrowUp')) forwardInput += 1;
+      if (keysDown.has('KeyS') || keysDown.has('ArrowDown')) forwardInput -= 1;
+      if (keysDown.has('KeyD') || keysDown.has('ArrowRight')) rightInput += 1;
+      if (keysDown.has('KeyA') || keysDown.has('ArrowLeft')) rightInput -= 1;
+
+      if (forwardInput === 0 && rightInput === 0) {
+        moveVec.set(0, 0, 0);
+        return moveVec;
+      }
+
+      camera.getWorldDirection(camForward);
+      camForward.y = 0;
+      camForward.normalize();
+
+      camRight.crossVectors(camForward, new THREE.Vector3(0, 1, 0)).normalize();
+
+      moveVec
+        .set(0, 0, 0)
+        .addScaledVector(camForward, forwardInput)
+        .addScaledVector(camRight, rightInput)
+        .normalize();
+
+      return moveVec;
+    }
+
+    function animate() {
+      requestAnimationFrame(animate);
+
+      const dt = clock.getDelta();
+      prevCharPos.copy(fisher.group.position);
+
+      const input = computeCameraRelativeInput();
+      fisher.update(dt, input, playableMode);
+
+      // Smoothly follow character delta in Playable Dock mode while preserving OrbitControls freedom
+      if (playableMode) {
+        const dx = fisher.group.position.x - prevCharPos.x;
+        const dz = fisher.group.position.z - prevCharPos.z;
+        camera.position.x += dx;
+        camera.position.z += dz;
+        controls.target.x += dx;
+        controls.target.z += dz;
+        controls.target.y = THREE.MathUtils.lerp(
+          controls.target.y,
+          1.1 + fisher.verticalOffset * 0.45,
+          Math.min(1, dt * 8)
+        );
+      }
+
+      syncHudActiveState();
+      controls.update();
+      renderFrame();
+    }
+
+    window.addEventListener('resize', () => {
+      const w = container.clientWidth;
+      const h = container.clientHeight;
+      if (!w || !h) return;
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    });
+
+    animate();
+  </script>
+</body>
+</html>

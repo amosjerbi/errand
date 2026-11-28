@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NPC Line-up</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&display=swap');
+    :root { --paper: #fffaf0; --ink: #3a2b22; --sky: #cbe8f6; --accent: #ff5a6e; }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; overflow: hidden; background: var(--sky); font-family: Fredoka, system-ui, sans-serif; color: var(--ink); }
+    canvas { display: block; }
+    .bar { position: fixed; left: 16px; right: 16px; top: 16px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; pointer-events: none; }
+    .card { pointer-events: auto; background: rgba(255,250,240,.92); border-radius: 18px; padding: 8px 12px; box-shadow: 0 6px 18px rgba(40,25,15,.14); display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+    h1 { font-size: 18px; margin: 0 8px 0 0; font-weight: 700; }
+    button { font: 600 14px Fredoka, system-ui, sans-serif; border: 0; border-radius: 999px; padding: 7px 13px; background: #fff; color: var(--ink); cursor: pointer; box-shadow: inset 0 0 0 1.5px rgba(58,43,34,.15); }
+    button:hover { background: #fff3e6; }
+    button.on { background: var(--ink); color: #fff; box-shadow: none; }
+    button.go { background: var(--accent); color: #fff; box-shadow: none; }
+    .muted { font-size: 13px; opacity: .7; }
+    .labels { position: fixed; inset: 0; pointer-events: none; }
+    .tag { position: absolute; transform: translate(-50%, -100%); white-space: nowrap; background: rgba(255,250,240,.94); border-radius: 999px; padding: 3px 10px 3px 8px; font-size: 13px; font-weight: 600; box-shadow: 0 3px 10px rgba(40,25,15,.15); display: flex; align-items: center; gap: 6px; pointer-events: auto; cursor: pointer; }
+    .tag i { width: 10px; height: 10px; border-radius: 50%; display: inline-block; box-shadow: 0 0 0 2px #fff; }
+    .tag small { font-weight: 500; opacity: .6; }
+    .tag.sel { background: var(--ink); color: #fff; }
+    .info { position: fixed; left: 16px; bottom: 16px; max-width: min(420px, calc(100vw - 32px)); }
+    .info .card { display: block; font-size: 14px; line-height: 1.45; }
+    .info b { font-weight: 700; }
+    .info code { font-size: 12px; background: rgba(58,43,34,.07); padding: 1px 5px; border-radius: 6px; word-break: break-all; }
+    @media (max-width: 640px) { h1 { width: 100%; } .info { display: none; } }
+  </style>
+  <script type="importmap">
+    { "imports": { "three": "https://unpkg.com/three@0.169.0/build/three.module.js", "three/addons/": "https://unpkg.com/three@0.169.0/examples/jsm/" } }
+  </script>
+</head>
+<body>
+  <div class="bar">
+    <div class="card">
+      <h1>NPC Line-up</h1>
+      <button data-mix="mix" class="on">Mixed</button>
+      <button data-mix="adult">Adults</button>
+      <button data-mix="kid">Kids</button>
+    </div>
+    <div class="card">
+      <button data-n="5">5</button>
+      <button data-n="8" class="on">8</button>
+      <button data-n="12">12</button>
+      <button class="go" id="reroll">🎲 New villagers</button>
+      <button id="dance">Jump!</button>
+    </div>
+  </div>
+  <div class="labels" id="labels"></div>
+  <div class="info"><div class="card" id="info">Click a name to see what that villager is made of. Drag to orbit, scroll to zoom.</div></div>
+
+  <!-- the same character (and villager looks) as 3d_character.html and the game levels -->
+  <script src="../fisher-kit.js"></script>
+  <script type="module">
+    import * as THREE from 'three';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+    const Kit = window.defineFisherKit(THREE);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setPixelRatio(Math.min(2, devicePixelRatio));
+    renderer.setSize(innerWidth, innerHeight);
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    document.body.prepend(renderer.domElement);
+
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color('#cbe8f6');
+    scene.fog = new THREE.Fog('#cbe8f6', 18, 40);
+    const camera = new THREE.PerspectiveCamera(36, innerWidth / innerHeight, 0.1, 100);
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true; controls.maxPolarAngle = Math.PI * 0.49; controls.minDistance = 2; controls.maxDistance = 26;
+
+    scene.add(new THREE.HemisphereLight('#fff6e8', '#b98a5a', 1.6));
+    const sun = new THREE.DirectionalLight('#fff1dc', 2.2);
+    sun.position.set(4, 9, 6); sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048);
+    Object.assign(sun.shadow.camera, { left: -12, right: 12, top: 8, bottom: -4, near: 1, far: 30 });
+    scene.add(sun);
+
+    // a wooden stage like the dock in 3d_character.html
+    const deckTex = Kit.createDockPlankTexture ? Kit.createDockPlankTexture() : null;
+    if (deckTex) { deckTex.wrapS = deckTex.wrapT = THREE.RepeatWrapping; deckTex.repeat.set(6, 2); }
+    const deck = new THREE.Mesh(new THREE.BoxGeometry(26, 0.3, 13), new THREE.MeshToonMaterial({ color: deckTex ? '#ffffff' : '#c8955c', map: deckTex, gradientMap: Kit.createVinylToonGradientMap() }));
+    deck.position.set(0, -0.15, -2.6); deck.receiveShadow = true; scene.add(deck);
+    const grass = new THREE.Mesh(new THREE.CircleGeometry(60, 48), new THREE.MeshLambertMaterial({ color: '#9fc56a' }));
+    grass.rotation.x = -Math.PI / 2; grass.position.y = -0.31; scene.add(grass);
+
+    const labels = document.getElementById('labels'), info = document.getElementById('info');
+    let mix = 'mix', count = 8, crew = [], selected = null;
+
+    let rowWidth = 0, rows = 1;
+    const perRow = () => Math.min(count, camera.aspect < 0.8 ? 3 : camera.aspect < 1.3 ? 5 : count);
+    function frameRow() {   // back the camera off until the whole row fits, on any screen shape
+      const vf = THREE.MathUtils.degToRad(camera.fov), hf = 2 * Math.atan(Math.tan(vf / 2) * camera.aspect);
+      const d = Math.max(6.5, (rowWidth / 2 + 1.1) / Math.tan(hf / 2)) + (rows - 1) * 1.2;
+      const tz = -(rows - 1) * 0.95;
+      camera.position.set(0, 1.3 + d * 0.2 + (rows - 1) * 0.9, tz + d);
+      controls.target.set(0, 0.95, tz); controls.maxDistance = Math.max(26, d * 1.4); controls.update();
+      scene.fog.near = d + 6; scene.fog.far = d + 30;
+    }
+    function clearCrew() { for (const v of crew) { scene.remove(v.c.group); v.tag.remove(); } crew = []; selected = null; }
+    function spawn() {
+      clearCrew();
+      const gap = count > 8 ? 1.25 : 1.55, taken = new Set();
+      for (let i = 0; i < count; i++) {
+        const c = new Kit.FisherCharacterController({ arenaBounds: 1e9 });
+        const D = Kit.devkitDefaults(Kit.DEVKIT);
+        const adult = mix === 'adult' ? true : mix === 'kid' ? false : undefined;
+        const look = Kit.rollVillager(D, { adult, scale: 0.62, taken });
+        c.applyDevkit(D);
+        const cols = perRow(), row = Math.floor(i / cols), col = i % cols, inRow = Math.min(cols, count - row * cols);
+        c.group.position.set((col - (inRow - 1) / 2) * gap + (row % 2) * gap * 0.25, 0, -row * 1.9 + (col % 2) * -0.25);
+        c.facingAngle = 0; c.setState('idle'); c.cyclePhase = Math.random() * 6;
+        c.group.traverse((o) => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = false; } });   // shadows fall on the deck, never across their faces
+        scene.add(c.group);
+        const tag = document.createElement('div');
+        tag.className = 'tag';
+        tag.innerHTML = `<i style="background:${look.color}"></i>${look.name} <small>${look.adult ? 'adult' : 'kid'}</small>`;
+        const v = { c, D, look, tag };
+        tag.onclick = () => select(v);
+        labels.appendChild(tag);
+        crew.push(v);
+      }
+      rows = Math.ceil(count / perRow());
+      rowWidth = (perRow() - 1) * gap + (rows > 1 ? gap * 0.25 : 0);
+      frameRow();
+      info.innerHTML = `${count} villagers, rolled with <code>rollVillager()</code> from <code>fisher-kit.js</code>, the same code that makes the NPCs in the Valley and the Town. Click a name for details.`;
+    }
+    const outfitName = { dress: 'Sundress', shirt: 'Shirt & trousers', overalls: 'Overalls' };
+    function select(v) {
+      selected = v;
+      for (const o of crew) o.tag.classList.toggle('sel', o === v);
+      const D = v.D, O = D.outfit, X = D.extras, extras = [X.facialHair !== 'none' ? (X.facialHair === 'beard' ? 'beard & mustache' : 'mustache') : '', X.glasses ? 'glasses' : ''].filter(Boolean).join(', ');
+      info.innerHTML = `<b>${v.look.name}</b> · ${v.look.adult ? 'adult' : 'kid'} · ${v.look.mood} face<br>` +
+        `Hair: ${D.hair.style} <i style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${D.hair.color}"></i> · ` +
+        `Outfit: ${outfitName[O.style]}${O.style === 'dress' ? '' : (O.shorts ? ' (shorts)' : '')}${O.shoes ? ', shoes' : ', barefoot'}` +
+        (extras ? `<br>Extras: ${extras}` : '') +
+        `<br><span class="muted">Click the name again for a little jump.</span>`;
+      v.c.triggerAction('jump');
+    }
+
+    document.querySelectorAll('[data-mix]').forEach((b) => b.onclick = () => { mix = b.dataset.mix; document.querySelectorAll('[data-mix]').forEach((x) => x.classList.toggle('on', x === b)); spawn(); });
+    document.querySelectorAll('[data-n]').forEach((b) => b.onclick = () => { count = +b.dataset.n; document.querySelectorAll('[data-n]').forEach((x) => x.classList.toggle('on', x === b)); spawn(); });
+    document.getElementById('reroll').onclick = spawn;
+    document.getElementById('dance').onclick = () => crew.forEach((v, i) => setTimeout(() => v.c.triggerAction(i % 3 === 2 ? 'frontflip' : 'jump'), i * 90));
+
+    addEventListener('resize', () => { camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth, innerHeight); const before = rows; if (Math.ceil(count / perRow()) !== before) spawn(); else frameRow(); });
+    const clock = new THREE.Clock(), zero = new THREE.Vector3(), tmp = new THREE.Vector3();
+    function frame() {
+      const dt = Math.min(clock.getDelta(), 0.05);
+      for (const v of crew) {
+        v.c.update(dt, zero, true);
+        // name tag above the head
+        v.c.group.updateMatrixWorld();
+        tmp.set(0, v.look.adult ? 3.05 : 2.55, 0).applyMatrix4(v.c.group.matrixWorld).project(camera);
+        const vis = tmp.z < 1;
+        v.tag.style.display = vis ? '' : 'none';
+        if (vis) { v.tag.style.left = `${(tmp.x * 0.5 + 0.5) * innerWidth}px`; v.tag.style.top = `${(-tmp.y * 0.5 + 0.5) * innerHeight}px`; }
+      }
+      controls.update();
+      renderer.render(scene, camera);
+      requestAnimationFrame(frame);
+    }
+    spawn();
+    frame();
+    window.Lineup = { get crew() { return crew; }, spawn };
+  </script>
+</body>
+</html>
